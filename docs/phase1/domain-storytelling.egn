@@ -1,0 +1,1326 @@
+{
+  "domain": {
+    "name": "default",
+    "actors": {
+      "Person": "<svg viewBox=\"0 0 24 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 5.9c1.16 0 2.1.94 2.1 2.1s-.94 2.1-2.1 2.1S9.9 9.16 9.9 8s.94-2.1 2.1-2.1m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 9c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>",
+      "Group": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"48\" viewBox=\"0 0 24 26\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M16.5 13c-1.2 0-3.07.34-4.5 1-1.43-.67-3.3-1-4.5-1C5.33 13 1 14.08 1 16.25V19h22v-2.75c0-2.17-4.33-3.25-6.5-3.25zm-4 4.5h-10v-1.25c0-.54 2.56-1.75 5-1.75s5 1.21 5 1.75v1.25zm9 0H14v-1.25c0-.46-.2-.86-.52-1.22.88-.3 1.96-.53 3.02-.53 2.44 0 5 1.21 5 1.75v1.25zM7.5 12c1.93 0 3.5-1.57 3.5-3.5S9.43 5 7.5 5 4 6.57 4 8.5 5.57 12 7.5 12zm0-5.5c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 5.5c1.93 0 3.5-1.57 3.5-3.5S18.43 5 16.5 5 13 6.57 13 8.5s1.57 3.5 3.5 3.5zm0-5.5c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z\"/></svg>",
+      "System": "<svg viewBox=\"0 0 24 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20,18c1.1,0,2-0.9,2-2V6c0-1.1-0.9-2-2-2H4C2.9,4,2,4.9,2,6v10c0,1.1,0.9,2,2,2H0v2h24v-2H20z M4,6h16v10H4V6z\"/></svg>",
+      "Cellphone": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 28\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M7 22h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2zM16 .01L8 0C6.9 0 6 .9 6 2v16c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V2c0-1.1-.9-1.99-2-1.99zM16 18H8v-1h8v1zm0-3H8V5h8v10zm0-12H8V2h8v1z\"/></svg>"
+    },
+    "workObjects": {
+      "Folder": "<svg viewBox=\"0 0 24 26\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"none\" d=\"M0,0h24v24H0V0z\"/><path d=\"M9.17,6l2,2H20v10L4,18V6H9.17 M10,4H4C2.9,4,2.01,4.9,2.01,6L2,18c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8c0-1.1-0.9-2-2-2 h-8L10,4L10,4z\"/></svg>",
+      "Call": "<svg viewBox=\"0 0 24 26\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"none\" d=\"M0,0h24v24H0V0z\"/><path d=\"M6.54,5C6.6,5.89,6.75,6.76,6.99,7.59l-1.2,1.2C5.38,7.59,5.12,6.32,5.03,5H6.54 M16.4,17.02c0.85,0.24,1.72,0.39,2.6,0.45 v1.49c-1.32-0.09-2.59-0.35-3.8-0.75L16.4,17.02 M7.5,3H4C3.45,3,3,3.45,3,4c0,9.39,7.61,17,17,17c0.55,0,1-0.45,1-1v-3.49\tc0-0.55-0.45-1-1-1c-1.24,0-2.45-0.2-3.57-0.57c-0.1-0.04-0.21-0.05-0.31-0.05c-0.26,0-0.51,0.1-0.71,0.29l-2.2,2.2 c-2.83-1.45-5.15-3.76-6.59-6.59l2.2-2.2C9.1,8.31,9.18,7.92,9.07,7.57C8.7,6.45,8.5,5.25,8.5,4C8.5,3.45,8.05,3,7.5,3L7.5,3z\"/></svg>",
+      "Email": "<svg viewBox=\"0 0 24 26\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"none\" d=\"M0,0h24v24H0V0z\"/><path fill-opacity=\"0.9\" d=\"M12,1.95c-5.52,0-10,4.48-10,10s4.48,10,10,10h5v-2h-5c-4.34,0-8-3.66-8-8s3.66-8,8-8s8,3.66,8,8v1.43 c0,0.79-0.71,1.57-1.5,1.57S17,14.17,17,13.38v-1.43c0-2.76-2.24-5-5-5s-5,2.24-5,5s2.24,5,5,5c1.38,0,2.64-0.56,3.54-1.47 c0.65,0.89,1.77,1.47,2.96,1.47c1.97,0,3.5-1.6,3.5-3.57v-1.43C22,6.43,17.52,1.95,12,1.95z M12,14.95c-1.66,0-3-1.34-3-3 s1.34-3,3-3s3,1.34,3,3S13.66,14.95,12,14.95z\"/></svg>",
+      "Conversation": "<svg height=\"48\" viewBox=\"0 0 24 26\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z\"/></svg>",
+      "Info": "<svg height=\"48\" viewBox=\"0 0 24 26\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z\"/></svg>",
+      "Car": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM19 17H5v-5h14v5z\"/><circle cx=\"7.5\" cy=\"14.5\" r=\"1.5\"/><circle cx=\"16.5\" cy=\"14.5\" r=\"1.5\"/></svg>",
+      "Assignment": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24px\" height=\"24px\" viewBox=\"0 0 24 24\"><path d=\"M0 0h24v24H0V0z\" fill=\"none\"/><path d=\"M7 15h7v2H7zm0-4h10v2H7zm0-4h10v2H7zm12-4h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-.14 0-.27.01-.4.04-.39.08-.74.28-1.01.55-.18.18-.33.4-.43.64-.1.23-.16.49-.16.77v14c0 .27.06.54.16.78s.25.45.43.64c.27.27.62.47 1.01.55.13.02.26.03.4.03h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7-.25c.41 0 .75.34.75.75s-.34.75-.75.75-.75-.34-.75-.75.34-.75.75-.75zM19 19H5V5h14v14z\"/></svg>",
+      "Wrench": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 28\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M22.61 18.99l-9.08-9.08c.93-2.34.45-5.1-1.44-7C9.79.61 6.21.4 3.66 2.26L7.5 6.11 6.08 7.52 2.25 3.69C.39 6.23.6 9.82 2.9 12.11c1.86 1.86 4.57 2.35 6.89 1.48l9.11 9.11c.39.39 1.02.39 1.41 0l2.3-2.3c.4-.38.4-1.01 0-1.41zm-3 1.6l-9.46-9.46c-.61.45-1.29.72-2 .82-1.36.2-2.79-.21-3.83-1.25C3.37 9.76 2.93 8.5 3 7.26l3.09 3.09 4.24-4.24-3.09-3.09c1.24-.07 2.49.37 3.44 1.31 1.08 1.08 1.49 2.57 1.24 3.96-.12.71-.42 1.37-.88 1.96l9.45 9.45-.88.89z\"/></svg>",
+      "Shopping": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M15.55 13c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.37-.66-.11-1.48-.87-1.48H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 15.37 5.48 17 7 17h12v-2H7l1.1-2h7.45zM6.16 6h12.15l-2.76 5H8.53L6.16 6zM7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\"/></svg>",
+      "Store": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M18.36 9l.6 3H5.04l.6-3h12.72M20 4H4v2h16V4zm0 3H4l-1 5v2h1v6h10v-6h4v6h2v-6h1v-2l-1-5zM6 18v-4h6v4H6z\"/></svg>",
+      "Credit-Card": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z\"/></svg>",
+      "Dollar": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z\"/></svg>",
+      "Search": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 26\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z\"/></svg>",
+      "Receipt": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 28\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5zM19 19.09H5V4.91h14v14.18zM6 15h12v2H6zm0-4h12v2H6zm0-4h12v2H6z\"/></svg>"
+    }
+  },
+  "dst": [
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_0149",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 533,
+            "y": 684
+          },
+          "x": 495,
+          "y": 695
+        },
+        {
+          "original": {
+            "x": 372,
+            "y": 730
+          },
+          "x": 405,
+          "y": 721
+        }
+      ],
+      "source": "shape_5794",
+      "target": "shape_3853",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "checks the",
+      "id": "connection_0222",
+      "pickedColor": "black",
+      "number": 7,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1334,
+          "y": 840
+        },
+        {
+          "original": {
+            "x": 1310,
+            "y": 1046
+          },
+          "x": 1314,
+          "y": 1008
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_0615",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "aproves the",
+      "id": "connection_0703",
+      "pickedColor": "black",
+      "number": 11,
+      "waypoints": [
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 708,
+          "y": 633
+        },
+        {
+          "original": {
+            "x": 530,
+            "y": 685
+          },
+          "x": 566,
+          "y": 675
+        }
+      ],
+      "source": "shape_0737",
+      "target": "shape_5794",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "sends the",
+      "id": "connection_0767",
+      "pickedColor": "black",
+      "number": 17,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1301,
+          "y": 770
+        },
+        {
+          "original": {
+            "x": 1130,
+            "y": 667
+          },
+          "x": 1162,
+          "y": 686
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_4681",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "registers the",
+      "id": "connection_1794",
+      "pickedColor": "black",
+      "number": 2,
+      "waypoints": [
+        {
+          "original": {
+            "x": 978,
+            "y": 195
+          },
+          "x": 1004,
+          "y": 241
+        },
+        {
+          "original": {
+            "x": 1268,
+            "y": 487
+          },
+          "x": 1230,
+          "y": 449
+        }
+      ],
+      "source": "shape_5492",
+      "target": "shape_1373",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "assign the",
+      "id": "connection_1834",
+      "pickedColor": "black",
+      "number": 3,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1345,
+          "y": 756
+        },
+        {
+          "original": {
+            "x": 1426,
+            "y": 213
+          },
+          "x": 1419,
+          "y": 260
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_2243",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "registers the",
+      "id": "connection_1919",
+      "pickedColor": "black",
+      "number": 5,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1910,
+          "y": 287
+        },
+        {
+          "original": {
+            "x": 1616,
+            "y": 374
+          },
+          "x": 1649,
+          "y": 364
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_1976",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_2056",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1268,
+            "y": 487
+          },
+          "x": 1278,
+          "y": 547.75
+        },
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1330,
+          "y": 755
+        }
+      ],
+      "source": "shape_1373",
+      "target": "shape_6651",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "to the",
+      "id": "connection_2599",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 869,
+            "y": 833
+          },
+          "x": 847,
+          "y": 795
+        },
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 765,
+          "y": 655
+        }
+      ],
+      "source": "shape_8332",
+      "target": "shape_0737",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "queries the",
+      "id": "connection_2887",
+      "pickedColor": "black",
+      "number": 10,
+      "waypoints": [
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 723,
+          "y": 669
+        },
+        {
+          "original": {
+            "x": 650,
+            "y": 816
+          },
+          "x": 664,
+          "y": 788
+        }
+      ],
+      "source": "shape_0737",
+      "target": "shape_8664",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "uses the",
+      "id": "connection_3550",
+      "pickedColor": "black",
+      "number": 14,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1939,
+          "y": 323
+        },
+        {
+          "original": {
+            "x": 1891,
+            "y": 589
+          },
+          "x": 1898,
+          "y": 553
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_8952",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_3828",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1482,
+            "y": 498
+          },
+          "x": 1459,
+          "y": 563.75
+        },
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1353,
+          "y": 764
+        }
+      ],
+      "source": "shape_5772",
+      "target": "shape_6651",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:connection",
+      "name": "",
+      "id": "connection_3833",
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1966,
+          "y": 251
+        },
+        {
+          "original": {
+            "x": 2019,
+            "y": 177
+          },
+          "x": 2008,
+          "y": 192
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_3995"
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "picks up the",
+      "id": "connection_3965",
+      "pickedColor": "black",
+      "number": 19,
+      "waypoints": [
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 745,
+          "y": 584
+        },
+        {
+          "original": {
+            "x": 735,
+            "y": 314
+          },
+          "x": 737,
+          "y": 361
+        }
+      ],
+      "source": "shape_0737",
+      "target": "shape_9782",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "creates the",
+      "id": "connection_4015",
+      "pickedColor": "black",
+      "number": 16,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1301,
+          "y": 788
+        },
+        {
+          "original": {
+            "x": 1018,
+            "y": 748
+          },
+          "x": 1067,
+          "y": 755
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_2946",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "to repair the",
+      "id": "connection_4379",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1891,
+            "y": 589
+          },
+          "x": 1864,
+          "y": 687.5
+        },
+        {
+          "original": {
+            "x": 1811,
+            "y": 730
+          },
+          "x": 1826,
+          "y": 703
+        }
+      ],
+      "source": "shape_8952",
+      "target": "shape_9221",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "to the",
+      "id": "connection_4392",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1755,
+            "y": 609
+          },
+          "x": 1771,
+          "y": 582
+        },
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1921,
+          "y": 323
+        }
+      ],
+      "source": "shape_1253",
+      "target": "shape_5397",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "finishes the",
+      "id": "connection_4507",
+      "pickedColor": "black",
+      "number": 15,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1953,
+          "y": 322
+        },
+        {
+          "original": {
+            "x": 2009,
+            "y": 833
+          },
+          "x": 2005,
+          "y": 795
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_6743",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "by",
+      "id": "connection_4829",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1130,
+            "y": 667
+          },
+          "x": 1092,
+          "y": 656
+        },
+        {
+          "original": {
+            "x": 978,
+            "y": 622
+          },
+          "x": 1018,
+          "y": 634
+        }
+      ],
+      "source": "shape_4681",
+      "target": "shape_8406",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_5258",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1649,
+            "y": 517
+          },
+          "x": 1611,
+          "y": 550
+        },
+        {
+          "original": {
+            "x": 1341,
+            "y": 788
+          },
+          "x": 1360,
+          "y": 771
+        }
+      ],
+      "source": "shape_4538",
+      "target": "shape_6651",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_5371",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 2009,
+            "y": 833
+          },
+          "x": 1971,
+          "y": 831
+        },
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1384,
+          "y": 796
+        }
+      ],
+      "source": "shape_6743",
+      "target": "shape_6651",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "drops off the",
+      "id": "connection_5483",
+      "pickedColor": "black",
+      "number": 1,
+      "waypoints": [
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 764,
+          "y": 598
+        },
+        {
+          "original": {
+            "x": 903,
+            "y": 409
+          },
+          "x": 868,
+          "y": 456
+        }
+      ],
+      "source": "shape_0737",
+      "target": "shape_2511",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "by",
+      "id": "connection_6199",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1095,
+            "y": 887
+          },
+          "x": 1057,
+          "y": 878
+        },
+        {
+          "original": {
+            "x": 869,
+            "y": 833
+          },
+          "x": 911,
+          "y": 843
+        }
+      ],
+      "source": "shape_9224",
+      "target": "shape_8332",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "sends the",
+      "id": "connection_6432",
+      "pickedColor": "black",
+      "number": 9,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1301,
+          "y": 808
+        },
+        {
+          "original": {
+            "x": 1095,
+            "y": 887
+          },
+          "x": 1126,
+          "y": 875
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_9224",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "using a",
+      "id": "connection_6707",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1171,
+            "y": 553
+          },
+          "x": 1133,
+          "y": 536
+        },
+        {
+          "original": {
+            "x": 1021,
+            "y": 487
+          },
+          "x": 1057,
+          "y": 503
+        }
+      ],
+      "source": "shape_5588",
+      "target": "shape_6576",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "to the",
+      "id": "connection_6889",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 978,
+            "y": 622
+          },
+          "x": 940,
+          "y": 622
+        },
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 789,
+          "y": 622
+        }
+      ],
+      "source": "shape_8406",
+      "target": "shape_0737",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "in the",
+      "id": "connection_6934",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1616,
+            "y": 374
+          },
+          "x": 1578,
+          "y": 409
+        },
+        {
+          "original": {
+            "x": 1482,
+            "y": 498
+          },
+          "x": 1504,
+          "y": 478
+        }
+      ],
+      "source": "shape_1976",
+      "target": "shape_5772",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "creates the",
+      "id": "connection_7789",
+      "pickedColor": "black",
+      "number": 8,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1304,
+          "y": 840
+        },
+        {
+          "original": {
+            "x": 1191,
+            "y": 994
+          },
+          "x": 1209,
+          "y": 970
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_7143",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "from the",
+      "id": "connection_8477",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 735,
+            "y": 314
+          },
+          "x": 764,
+          "y": 300
+        },
+        {
+          "original": {
+            "x": 978,
+            "y": 195
+          },
+          "x": 940,
+          "y": 214
+        }
+      ],
+      "source": "shape_9782",
+      "target": "shape_5492",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "to the",
+      "id": "connection_8643",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1426,
+            "y": 213
+          },
+          "x": 1472,
+          "y": 219
+        },
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1910,
+          "y": 271
+        }
+      ],
+      "source": "shape_2243",
+      "target": "shape_5397",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "attached in",
+      "id": "connection_8990",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 650,
+            "y": 816
+          },
+          "x": 619,
+          "y": 863
+        },
+        {
+          "original": {
+            "x": 559,
+            "y": 956
+          },
+          "x": 576,
+          "y": 930
+        }
+      ],
+      "source": "shape_8664",
+      "target": "shape_0700",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:connection",
+      "name": "",
+      "id": "connection_9042",
+      "waypoints": [
+        {
+          "original": {
+            "x": 978,
+            "y": 195
+          },
+          "x": 999,
+          "y": 174
+        },
+        {
+          "original": {
+            "x": 1076,
+            "y": 95
+          },
+          "x": 1061,
+          "y": 110
+        }
+      ],
+      "source": "shape_5492",
+      "target": "shape_5815"
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "updates the",
+      "id": "connection_9106",
+      "pickedColor": "black",
+      "number": 12,
+      "waypoints": [
+        {
+          "original": {
+            "x": 372,
+            "y": 730
+          },
+          "x": 334,
+          "y": 738
+        },
+        {
+          "original": {
+            "x": 159,
+            "y": 775
+          },
+          "x": 194,
+          "y": 768
+        }
+      ],
+      "source": "shape_3853",
+      "target": "shape_5647",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "requests the",
+      "id": "connection_9348",
+      "pickedColor": "black",
+      "number": 6,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1910,
+          "y": 307
+        },
+        {
+          "original": {
+            "x": 1649,
+            "y": 517
+          },
+          "x": 1673,
+          "y": 498
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_4538",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "with the",
+      "id": "connection_9455",
+      "pickedColor": "black",
+      "number": null,
+      "waypoints": [
+        {
+          "original": {
+            "x": 903,
+            "y": 409
+          },
+          "x": 914,
+          "y": 378
+        },
+        {
+          "original": {
+            "x": 978,
+            "y": 195
+          },
+          "x": 962,
+          "y": 242
+        }
+      ],
+      "source": "shape_2511",
+      "target": "shape_5492",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "pays the",
+      "id": "connection_9457",
+      "pickedColor": "black",
+      "number": 18,
+      "waypoints": [
+        {
+          "original": {
+            "x": 746,
+            "y": 622
+          },
+          "x": 775,
+          "y": 608
+        },
+        {
+          "original": {
+            "x": 1021,
+            "y": 487
+          },
+          "x": 983,
+          "y": 506
+        }
+      ],
+      "source": "shape_0737",
+      "target": "shape_5588",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "inspects the",
+      "id": "connection_9911",
+      "pickedColor": "black",
+      "number": 4,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1948,
+            "y": 276
+          },
+          "x": 1910,
+          "y": 277
+        },
+        {
+          "original": {
+            "x": 1535,
+            "y": 285
+          },
+          "x": 1577,
+          "y": 284
+        }
+      ],
+      "source": "shape_5397",
+      "target": "shape_9711",
+      "multipleNumberAllowed": false
+    },
+    {
+      "type": "domainStory:activity",
+      "name": "dispatches the",
+      "id": "connection_9922",
+      "pickedColor": "black",
+      "number": 13,
+      "waypoints": [
+        {
+          "original": {
+            "x": 1339,
+            "y": 793
+          },
+          "x": 1369,
+          "y": 780
+        },
+        {
+          "original": {
+            "x": 1750,
+            "y": 612
+          },
+          "x": 1717,
+          "y": 627
+        }
+      ],
+      "source": "shape_6651",
+      "target": "shape_1253",
+      "multipleNumberAllowed": false
+    },
+    {
+      "name": "Inventory",
+      "id": "shape_0615",
+      "type": "domainStory:workObjectStore",
+      "x": 1272,
+      "y": 1008
+    },
+    {
+      "name": "E-mail",
+      "id": "shape_0700",
+      "type": "domainStory:workObjectEmail",
+      "x": 521,
+      "y": 918
+    },
+    {
+      "type": "domainStory:actorPerson",
+      "name": "Customer",
+      "id": "shape_0737",
+      "x": 708,
+      "y": 584
+    },
+    {
+      "name": "Work Order",
+      "id": "shape_1253",
+      "type": "domainStory:workObjectAssignment",
+      "x": 1717,
+      "y": 571
+    },
+    {
+      "type": "domainStory:workObjectAssignment",
+      "name": "Work Order",
+      "id": "shape_1373",
+      "x": 1230,
+      "y": 449
+    },
+    {
+      "type": "domainStory:workObjectSearch",
+      "name": "Diagnostic",
+      "id": "shape_1976",
+      "x": 1578,
+      "y": 336
+    },
+    {
+      "type": "domainStory:workObjectAssignment",
+      "name": "Work Order",
+      "id": "shape_2243",
+      "x": 1388,
+      "y": 175
+    },
+    {
+      "type": "domainStory:workObjectCar",
+      "name": "Vehicle",
+      "id": "shape_2511",
+      "x": 865,
+      "y": 371
+    },
+    {
+      "type": "domainStory:workObjectDollar",
+      "name": "Billing",
+      "id": "shape_2946",
+      "x": 983,
+      "y": 713
+    },
+    {
+      "type": "domainStory:actorCellphone",
+      "name": "WebApp",
+      "id": "shape_3853",
+      "x": 334,
+      "y": 692
+    },
+    {
+      "type": "domainStory:textAnnotation",
+      "name": "",
+      "id": "shape_3995",
+      "x": 1969,
+      "y": 162,
+      "text": "Mechanic",
+      "number": 29.987609371672182,
+      "height": 29.987609371672182,
+      "width": 100.00000567241229
+    },
+    {
+      "name": "Shop Supplies and Spare Parts",
+      "id": "shape_4538",
+      "type": "domainStory:workObjectShopping",
+      "x": 1611,
+      "y": 479
+    },
+    {
+      "name": "Billing",
+      "id": "shape_4681",
+      "type": "domainStory:workObjectDollar",
+      "x": 1092,
+      "y": 629
+    },
+    {
+      "name": "Employee",
+      "id": "shape_5397",
+      "type": "domainStory:actorPerson",
+      "x": 1910,
+      "y": 238,
+      "pickedColor": "#000000"
+    },
+    {
+      "name": "Employee",
+      "id": "shape_5492",
+      "type": "domainStory:actorPerson",
+      "x": 940,
+      "y": 157
+    },
+    {
+      "name": "Billing",
+      "id": "shape_5588",
+      "type": "domainStory:workObjectDollar",
+      "x": 983,
+      "y": 449
+    },
+    {
+      "name": "Work Order",
+      "id": "shape_5647",
+      "type": "domainStory:workObjectAssignment",
+      "x": 121,
+      "y": 737
+    },
+    {
+      "name": "Work Order",
+      "id": "shape_5772",
+      "type": "domainStory:workObjectAssignment",
+      "x": 1444,
+      "y": 460
+    },
+    {
+      "name": "Estimate",
+      "id": "shape_5794",
+      "type": "domainStory:workObjectReceipt",
+      "x": 495,
+      "y": 646
+    },
+    {
+      "type": "domainStory:textAnnotation",
+      "name": "",
+      "id": "shape_5815",
+      "x": 1026,
+      "y": 80,
+      "text": "Receptionist",
+      "number": 29.987609371672182,
+      "height": 29.987609371672182,
+      "width": 100.00000567241229
+    },
+    {
+      "type": "domainStory:workObjectCredit-Card",
+      "name": "Payment Gateway",
+      "id": "shape_6576",
+      "x": 1133,
+      "y": 515
+    },
+    {
+      "type": "domainStory:actorSystem",
+      "name": "Sistem",
+      "id": "shape_6651",
+      "x": 1301,
+      "y": 755
+    },
+    {
+      "name": "Work Order",
+      "id": "shape_6743",
+      "type": "domainStory:workObjectAssignment",
+      "x": 1971,
+      "y": 795
+    },
+    {
+      "type": "domainStory:workObjectReceipt",
+      "name": "Estimate",
+      "id": "shape_7143",
+      "x": 1153,
+      "y": 956
+    },
+    {
+      "type": "domainStory:workObjectEmail",
+      "name": "E-mail",
+      "id": "shape_8332",
+      "x": 831,
+      "y": 795
+    },
+    {
+      "name": "E-mail",
+      "id": "shape_8406",
+      "type": "domainStory:workObjectEmail",
+      "x": 940,
+      "y": 584
+    },
+    {
+      "type": "domainStory:workObjectReceipt",
+      "name": "Estimate",
+      "id": "shape_8664",
+      "x": 612,
+      "y": 778
+    },
+    {
+      "name": "Shop Supplies and Spare Parts",
+      "id": "shape_8952",
+      "type": "domainStory:workObjectShopping",
+      "x": 1853,
+      "y": 551
+    },
+    {
+      "name": "Vehicle",
+      "id": "shape_9221",
+      "type": "domainStory:workObjectCar",
+      "x": 1773,
+      "y": 692
+    },
+    {
+      "name": "Estimate",
+      "id": "shape_9224",
+      "type": "domainStory:workObjectReceipt",
+      "x": 1057,
+      "y": 849
+    },
+    {
+      "name": "Vehicle",
+      "id": "shape_9711",
+      "type": "domainStory:workObjectCar",
+      "x": 1497,
+      "y": 247
+    },
+    {
+      "name": "Vehicle",
+      "id": "shape_9782",
+      "type": "domainStory:workObjectCar",
+      "x": 697,
+      "y": 276
+    },
+    {
+      "info": ""
+    },
+    {
+      "version": "3.1.0"
+    }
+  ]
+}

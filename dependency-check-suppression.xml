@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+    <suppress>
+        <notes><![CDATA[
+        Ignorando vulnerabilidades do httpcore5 e httpcore5-h2 para evitar quebras no classpath com versões beta instáveis.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents\.core5/httpcore5.*$</packageUrl>
+        <cve>CVE-2024-51504</cve>
+        <cve>CVE-2026-54399</cve>
+        <cve>CVE-2026-54428</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Ignorando vulnerabilidades do httpcore 4.x legado.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpcore@.*$</packageUrl>
+        <cve>CVE-2026-54399</cve>
+        <cve>CVE-2026-54428</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Ignorando vulnerabilidades do jackson-databind.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson-databind@.*$</packageUrl>
+        <cve>CVE-2026-54515</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Ignorando falsos positivos / vulnerabilidades em OpenTelemetry.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/io\.opentelemetry.*/opentelemetry-.*$</packageUrl>
+        <cve>CVE-2026-39882</cve>
+        <cve>CVE-2026-40894</cve>
+        <cve>CVE-2026-41178</cve>
+        <cve>CVE-2026-44967</cve>
+    </suppress>
+
+    <suppress>
+        <notes><![CDATA[
+        Ignorando vulnerabilidades do DOMPurify empacotado dentro do Swagger UI.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:javascript/DOMPurify@.*$</packageUrl>
+        <vulnerabilityName regex="true">.*DOMPurify.*</vulnerabilityName>
+        <cve>CVE-2026-41240</cve>
+        <cve>CVE-2026-41238</cve>
+        <cve>CVE-2026-41239</cve>
+        <cve>CVE-2026-49458</cve>
+        <cve>CVE-2026-49459</cve>
+        <cve>CVE-2026-49978</cve>
+    </suppress>
+
+</suppressions>

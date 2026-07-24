@@ -1,0 +1,10 @@
+name: Feature Pipeline
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  quality-assurance:
+    uses: ./.github/workflows/job-quality-assurance.yml

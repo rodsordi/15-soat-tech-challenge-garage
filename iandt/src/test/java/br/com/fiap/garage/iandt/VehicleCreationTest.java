@@ -1,0 +1,69 @@
+package br.com.fiap.garage.iandt;
+
+import br.com.fiap.garage.GarageIntegrationTest;
+import br.com.fiap.garage.application.GarageApplication;
+import br.com.fiap.garage.application.v1.dto.VehicleDto;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import tools.jackson.databind.json.JsonMapper;
+
+import static br.com.fiap.garage.application.v1.dto.factory.CustomerDtoFactory.create_CustomerDto_Request;
+import static br.com.fiap.garage.application.v1.dto.factory.VehicleDtoFactory.create_VehicleDto_Request;
+import static br.com.fiap.garage.iandt.CustomerCreationTest.createCustomer;
+import static io.restassured.RestAssured.given;
+import static io.restassured.http.ContentType.JSON;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+
+@ActiveProfiles("int_test")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ContextConfiguration(classes = GarageApplication.class)
+@Testcontainers
+public class VehicleCreationTest extends GarageIntegrationTest {
+
+    @DisplayName("When creating a new vehicle")
+    @Nested
+    class Create {
+
+        @DisplayName("Then should execute successfully")
+        @Nested
+        class Success {
+
+            @DisplayName("Given an vehicle with all fields")
+            @Test
+            void test1() {
+                //Given
+                var requestBody = create_VehicleDto_Request()
+                        .withAllFields();
+                //When
+                var response = createVehicle(authorization, json, requestBody);
+                //Then
+                assertThat(response.statusCode())
+                        .isEqualTo(201);
+            }
+        }
+    }
+
+    public static Response createVehicle(String authorization, JsonMapper json, VehicleDto.Request requestBody) {
+        var scenarioRequestBody = create_CustomerDto_Request().valid();
+        var scenarioResponse = createCustomer(authorization, json, scenarioRequestBody);
+        var customerId = scenarioResponse.body().jsonPath().getString("id");
+        return given()
+                .log().all()
+                .header("Authorization", authorization)
+                .contentType(JSON)
+                .body(json.writeValueAsString(requestBody))
+                .pathParam("customerId", customerId)
+                .post("/v1/customers/{customerId}/vehicles")
+                .then()
+                .log().all()
+                .extract()
+                .response();
+    }
+}

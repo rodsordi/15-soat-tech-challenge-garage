@@ -1,0 +1,12 @@
+name: 'Setup JDK 25'
+description: 'Configura o JDK 25 (Temurin) com cache do Maven'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: JDK 25 config
+      uses: actions/setup-java@v5
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: maven

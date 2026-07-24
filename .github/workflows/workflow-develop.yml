@@ -1,0 +1,75 @@
+name: Develop Pipeline
+
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'main'
+
+jobs:
+  quality-assurance:
+    uses: ./.github/workflows/job-quality-assurance.yml
+
+  security:
+    needs: [quality-assurance]
+    uses: ./.github/workflows/job-security.yml
+    secrets:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+
+  build:
+    needs: [security]
+    uses: ./.github/workflows/job-build-image.yml
+
+  deploy:
+    needs: [build]
+    runs-on: [self-hosted, local, k8s]
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: ./.github/actions/setup-jdk
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install api-garage helm \
+            --namespace garage \
+            --set image.repository=kind-registry:5000/api-garage \
+            --set image.tag=${{ github.sha }} \
+            --set image.pullPolicy=IfNotPresent \
+            --wait --timeout 2m
+
+      - name: Diagnose failed deploy
+        if: failure()
+        run: |
+          kubectl -n garage get pods -l app=api-garage -o wide
+          echo "--- describe ---"
+          kubectl -n garage describe pods -l app=api-garage
+          echo "--- logs ---"
+          kubectl -n garage logs -l app=api-garage --tail=100 --all-containers --prefix || true
+          echo "--- previous logs (if crashed/restarted) ---"
+          kubectl -n garage logs -l app=api-garage --tail=100 --all-containers --prefix --previous || true
+
+  stress-tests:
+    needs: [deploy]
+    runs-on: [self-hosted, local, k8s]
+    environment: stress-testing
+
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: ./.github/actions/setup-jdk
+
+      - name: Execute stress tests
+        run: mvn clean verify -DstressTests -Dhost=api-garage.garage.svc.cluster.local
+
+      - name: Upload stress test report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: stress-test-report
+          path: stress/target/jmeter/reports/**
+          retention-days: 7

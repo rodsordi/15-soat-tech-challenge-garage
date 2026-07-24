@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>br.com.fiap</groupId>
+        <artifactId>api-garage</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>api-garage.stress</artifactId>
+
+    <properties>
+        <jMeterTestFile>scalability-test.jmx</jMeterTestFile>
+        <generateReports>true</generateReports>
+        <host>localhost</host>
+        <port>8080</port>
+        <threads>5</threads>
+        <rampup>2</rampup>
+        <duration>300</duration>
+        <delay>500</delay>
+        <loops>-1</loops>
+        <saveOutputFormat>csv</saveOutputFormat>
+        <saveRequestHeaders>false</saveRequestHeaders>
+        <saveResponseHeaders>false</saveResponseHeaders>
+        <saveSamplerData>false</saveSamplerData>
+        <saveResponseDataOnError>false</saveResponseDataOnError>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>debug</id>
+            <activation>
+                <property>
+                    <name>debug</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <properties>
+                <generateReports>false</generateReports>
+                <threads>1</threads>
+                <duration>30</duration>
+                <loops>1</loops>
+                <saveOutputFormat>xml</saveOutputFormat>
+                <saveRequestHeaders>true</saveRequestHeaders>
+                <saveResponseHeaders>true</saveResponseHeaders>
+                <saveSamplerData>true</saveSamplerData>
+                <saveResponseDataOnError>true</saveResponseDataOnError>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>stressTests</id>
+            <activation>
+                <property>
+                    <name>stressTests</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.lazerycode.jmeter</groupId>
+                        <artifactId>jmeter-maven-plugin</artifactId>
+                        <version>3.8.0</version>
+                        <executions>
+                            <execution>
+                                <id>configuration</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>configure</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jmeter-tests</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jmeter</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <jmeterVersion>5.6.3</jmeterVersion>
+                            <generateReports>${generateReports}</generateReports>
+                            <resultsFileFormat>${saveOutputFormat}</resultsFileFormat>
+
+                            <propertiesUser>
+                                <threads>${threads}</threads>
+                                <rampup>${rampup}</rampup>
+                                <duration>${duration}</duration>
+                                <delay>${delay}</delay>
+                                <host>${host}</host>
+                                <port>${port}</port>
+                                <loops>${loops}</loops>
+                                <jmeter.save.saveservice.output_format>${saveOutputFormat}</jmeter.save.saveservice.output_format>
+                                <jmeter.save.saveservice.requestHeaders>${saveRequestHeaders}</jmeter.save.saveservice.requestHeaders>
+                                <jmeter.save.saveservice.responseHeaders>${saveResponseHeaders}</jmeter.save.saveservice.responseHeaders>
+                                <jmeter.save.saveservice.samplerData>${saveSamplerData}</jmeter.save.saveservice.samplerData>
+                                <jmeter.save.saveservice.response_data.on_error>${saveResponseDataOnError}</jmeter.save.saveservice.response_data.on_error>
+                            </propertiesUser>
+                            <testFilesIncluded>
+                                <jMeterTestFile>${jMeterTestFile}</jMeterTestFile>
+                            </testFilesIncluded>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/jmeter</directory>
+            </testResource>
+        </testResources>
+    </build>
+</project>

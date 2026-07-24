@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #eeeeee;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            color: #777777;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
+    <title>Garage - Estimate Approval Required</title>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Garage</h1>
+    </div>
+
+    <div class="content">
+        <p>Dear {customerName},</p>
+
+        <p>I hope this email finds you well.</p>
+
+        <p>We have successfully completed the current vehicle analisis phase. To ensure everything is aligned with your expectations before we move forward to the next stage, <strong>we require your formal approval.</strong></p>
+
+        <p>The following estimate services were registered.</p>
+
+{services}
+
+        <p><strong>Total amount: {totalAmount}</strong></p>
+
+        <p><strong>Next Steps:</strong></p>
+        <ul>
+            <li>Review the estimated services and estimated material lists.</li>
+            <li>Provide feedback or request any necessary adjustments.</li>
+            <li>Confirm your approval in the website to proceed with the vehicle repair.</li>
+            <li>Login with the <strong>{customerUsername}</strong> username</li>
+        </ul>
+
+        <div class="button-container">
+            <a href="{garageWebPageUrl}/work-orders/{workOrderId}" class="button">Approve & Proceed</a>
+        </div>
+
+        <p style="margin-top: 30px;">If you have any questions or would like to hop on a quick call to discuss this, please let me know.</p>
+
+        <p>Best regards,<br>
+            <strong>{employeeName}</strong><br>
+            Garage</p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 Garage. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>
