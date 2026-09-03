@@ -1,9 +1,10 @@
-name: Develop Pipeline
+name: "API Garage CI/CD Pipeline"
 
 on:
   push:
     branches:
       - 'develop'
+      - 'feature/**'
   workflow_dispatch:
 
 permissions:
@@ -42,6 +43,7 @@ jobs:
   security:
     name: "OWASP Security Analysis"
     needs: [quality-assurance]
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
 
     steps:
@@ -72,6 +74,7 @@ jobs:
   build:
     name: "Build & Push Docker Image to ECR"
     needs: [security]
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
 
     steps:
@@ -116,6 +119,7 @@ jobs:
   deploy:
     name: "Deploy to Amazon EKS Cluster"
     needs: [build]
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
 
     steps:
