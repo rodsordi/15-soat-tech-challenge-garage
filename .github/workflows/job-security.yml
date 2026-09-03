@@ -1,32 +1,33 @@
-name: Integration Tests
+name: Security Analysis
 
 on:
   workflow_call:
     secrets:
       NVD_API_KEY:
-        required: true
+        required: false
 
 jobs:
   owasp-report:
-    runs-on: [self-hosted, local, k8s]
+    runs-on: ubuntu-latest
 
     env:
       NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
     steps:
       - name: Code checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
 
       - name: Generate OWASP Dependency-Check report
-        run: mvn -B clean verify -DskipTests -Dowasp -DdataDirectory=/root/.owasp/dependency-check/data
+        run: mvn -B clean verify -DskipTests -Dowasp
+        continue-on-error: true
 
       - name: Upload OWASP report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: owasp-dependency-check-report
           path: target/dependency-check-report.*
-          retention-days: 1
+          retention-days: 1

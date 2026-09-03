@@ -9,17 +9,9 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_CLOUD_AWS_SQS_ENDPOINT: http://floci:4566
-      MANAGEMENT_OPENTELEMETRY_TRACING_EXPORT_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
-      MANAGEMENT_OTLP_METRICS_EXPORT_URL: http://prometheus:9090/api/v1/otlp/v1/metrics
-      MANAGEMENT_OPENTELEMETRY_LOGGING_EXPORT_OTLP_ENDPOINT: http://loki:3100/otlp/v1/logs
     depends_on:
       postgres:
         condition: service_healthy
       floci:
         condition: service_started
-      jaeger:
-        condition: service_started
-      prometheus:
-        condition: service_started
-      loki:
-        condition: service_started
+

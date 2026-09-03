@@ -4,11 +4,14 @@ on:
   push:
     branches:
       - 'develop'
-      - 'main'
+  workflow_dispatch:
+
 
 jobs:
   quality-assurance:
     uses: ./.github/workflows/job-quality-assurance.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   security:
     needs: [quality-assurance]
@@ -19,46 +22,63 @@ jobs:
   build:
     needs: [security]
     uses: ./.github/workflows/job-build-image.yml
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      AWS_REGION: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
   deploy:
     needs: [build]
-    runs-on: [self-hosted, local, k8s]
+    runs-on: ubuntu-latest
 
     steps:
       - name: Code checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
 
-      - name: Deploy with Helm
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+
+      - name: Configure AWS Credentials
+        if: ${{ env.AWS_ACCESS_KEY_ID != '' || secrets.AWS_ACCESS_KEY_ID != '' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+
+      - name: Deploy to AWS EKS
+        if: ${{ env.AWS_ACCESS_KEY_ID != '' || secrets.AWS_ACCESS_KEY_ID != '' }}
         run: |
-          helm upgrade --install api-garage helm \
-            --namespace garage \
-            --set image.repository=kind-registry:5000/api-garage \
-            --set image.tag=${{ github.sha }} \
-            --set image.pullPolicy=IfNotPresent \
-            --wait --timeout 2m
+          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION || 'us-east-1' }} --name techchallenge-cluster
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION || 'us-east-1' }}.amazonaws.com/garage-api:${{ github.sha }}"
+          echo "Deploying image to EKS: $ECR_IMAGE"
+          kubectl -n garage set image deployment/api-garage api-garage=$ECR_IMAGE
+          kubectl -n garage rollout status deployment/api-garage --timeout=5m
+
 
       - name: Diagnose failed deploy
         if: failure()
         run: |
-          kubectl -n garage get pods -l app=api-garage -o wide
-          echo "--- describe ---"
-          kubectl -n garage describe pods -l app=api-garage
-          echo "--- logs ---"
+          kubectl -n garage get pods -l app=api-garage -o wide || true
+          kubectl -n garage describe pods -l app=api-garage || true
           kubectl -n garage logs -l app=api-garage --tail=100 --all-containers --prefix || true
-          echo "--- previous logs (if crashed/restarted) ---"
-          kubectl -n garage logs -l app=api-garage --tail=100 --all-containers --prefix --previous || true
 
   stress-tests:
     needs: [deploy]
-    runs-on: [self-hosted, local, k8s]
-    environment: stress-testing
+    runs-on: ubuntu-latest
+    if: false # Opcional / desativado por padrao no GitHub cloud
 
     steps:
       - name: Code checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup JDK
         uses: ./.github/actions/setup-jdk
@@ -68,8 +88,8 @@ jobs:
 
       - name: Upload stress test report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: stress-test-report
           path: stress/target/jmeter/reports/**
-          retention-days: 7
+          retention-days: 7
