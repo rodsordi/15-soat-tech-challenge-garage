@@ -1,212 +1,162 @@
-# Garage API
+# 🚗 Garage API (`15-soat-tech-challenge-garage`)
 
-API responsible for managing the vehicle mechanic workflow. Tech Challenge for the 15SOAT course.
+Microsserviço central do Tech Challenge (FIAP SOAT) responsável pela gestão e automação do fluxo operacional de oficinas mecânicas, incluindo cadastro de clientes, veículos, controle de peças/inventário, funcionários e ciclo de vida de ordens de serviço.
 
-## 🗒️ Information
+---
 
-- [Documentation](https://github.com/rodsordi/15SOAT-TechChallenge/wiki)
+## 🎯 1. Descrição do Propósito
 
-## 🏛️ Architecture
+A **Garage API** implementa as regras de negócio essenciais de uma oficina mecânica moderna sob o padrão de **Arquitetura Hexagonal (Ports & Adapters)** e **Domain-Driven Design (DDD)**. 
 
-**Hexagonal Architecture**
+Principais responsabilidades:
+* **Gestão de Clientes e Veículos**: Cadastro, busca por CPF/CNPJ e associação de veículos a proprietários.
+* **Ordens de Serviço (Work Orders)**: Abertura, diagnóstico, aprovação de orçamentos, execução de serviços e finalização com pagamento.
+* **Inventário e Serviços**: Controle de estoque de peças, precificação e catálogo de serviços mecânicos.
+* **Segurança e Controle de Acesso (RBAC)**: Proteção de rotas sensíveis com Spring Security 6 e tokens JWT (diferenciando perfis `CUSTOMER` e `EMPLOYEE`).
 
-![Hexagonal Architecture](docs/TechChallenge-ArchDesign.png)
+---
 
-### C4Model
+## 💻 2. Tecnologias Utilizadas
+
+* **Linguagem & Runtime**: Java 25 (OpenJDK / Eclipse Temurin).
+* **Framework Principal**: Spring Boot 3.x (Spring Web, Spring Data JPA, Spring Security, Spring Validation, Spring Actuator).
+* **Banco de Dados**: PostgreSQL 15 (com migrações automatizadas via Flyway).
+* **Segurança**: Criptografia BCrypt, autenticação Stateless via JWT (JSON Web Tokens) e controle de acesso RBAC.
+* **Gerenciador de Dependências & Build**: Apache Maven 3.9+.
+* **Qualidade & Testes**: JUnit 5, Mockito, Testcontainers, Jacoco (cobertura de código) e SonarQube / SonarCloud.
+* **Segurança de Dependências**: OWASP Dependency-Check.
+* **Documentação de API**: OpenAPI 3 / SpringDoc Swagger UI.
+* **Conteinerização & Deploy**: Docker (multi-stage build), Docker Compose e Helm Charts para Kubernetes (AWS EKS).
+
+---
+
+## 🏛️ 3. Diagrama da Arquitetura do Repositório
 
 ```mermaid
-C4Container
-title Garage (Container Diagram)
+graph TD
+    subgraph DrivingAdapters [Driving Adapters (Inbound)]
+        REST[REST Controllers / Swagger]
+        Security[SecurityFilter & JWT Validator]
+    end
 
-    Person(employee, "Organization Employee", "Garage staff member.")
-    Person(customer, "System Customer", "Garage customer.")
+    subgraph PortsIn [Inbound Ports (Use Cases)]
+        CustomerUC[Customer Use Cases]
+        OrderUC[Work Order Use Cases]
+        VehicleUC[Vehicle Use Cases]
+        InventoryUC[Inventory Use Cases]
+    end
 
-    System_Boundary(c1, "Garage Applications") {
-        Container(web_app, "Web Application", "React / SPA", "Vehicle repair<br> data management interface.")
-        Container(mobile_app, "Mobile App", "Flutter", "Mobile vehicle repair<br> data management.")
-        Container(api, "API Application", "Java / Spring Boot", "Handles garage business logic<br> via REST API.")
-    }
+    subgraph DomainCore [Domain Core (Business Logic)]
+        Entities[Entities & Value Objects: Customer, Order, Vehicle, Service]
+        DomainServices[Domain Services & Business Rules]
+    end
 
-    System_Boundary(c2, "External Systems") {
-        System_Ext(email, "E-mail Service", "External SMTP<br> Notification System.")
-    }
+    subgraph PortsOut [Outbound Ports (Gateways)]
+        CustomerGateway[Customer Gateway Port]
+        OrderGateway[Order Gateway Port]
+        VehicleGateway[Vehicle Gateway Port]
+    end
 
-    System_Boundary(c3, "Storage & Databases") {
-        ContainerDb(db, "Database", "PostgreSQL", "Manages work orders, services<br> and authorization data.")
-    }
+    subgraph DrivenAdapters [Driven Adapters (Outbound)]
+        JPAAdapter[Spring Data JPA Repositories]
+        DB[(PostgreSQL Database)]
+    end
 
-    Rel(employee, web_app, "Uses", "HTTPS")
-    Rel(customer, web_app, "Uses", "HTTPS")
-    Rel(customer, mobile_app, "Uses", "HTTPS")
-    
-    Rel(web_app, api, "Consumes", "HTTPS")
-    Rel(mobile_app, api, "Consumes", "HTTPS")
-    
-    Rel(api, db, "Reads from and writes to", "JDBC")
-    Rel(api, email, "Sends e-mails via", "HTTP")
+    REST --> Security
+    Security --> PortsIn
+    CustomerUC --> DomainCore
+    OrderUC --> DomainCore
+    VehicleUC --> DomainCore
+    InventoryUC --> DomainCore
+    DomainCore --> PortsOut
+    CustomerGateway --> JPAAdapter
+    OrderGateway --> JPAAdapter
+    VehicleGateway --> JPAAdapter
+    JPAAdapter --> DB
 ```
 
-## 📋 Prerequisites
-
-- [JDK 25](https://jdk.java.net/archive/)
-- [IDE 2026.1](https://www.jetbrains.com/idea/download/)
-- [Apache Maven 3.9.11](https://maven.apache.org/download.cgi)
-
-## ⚙️ Setup
-
-```sh
-export M2_HOME=~/app/apache-maven-3.9.11
-export M2=$M2_HOME/bin
-export PATH=$PATH:$M2
-```
-
-```sh
-export JAVA_HOME=~/app/jdk-25.0.2
-export PATH=$PATH:$JAVA_HOME/bin
-```
-
-### 📂 Cloning repository
-
-```sh
-git clone https://github.com/rodsordi/15SOAT-TechChallenge.git
-```
-
-### 📦 Package building
-
-```sh
-mvn clean install -DskipTests
-```
-
-### 🐳 Running the application with Docker
-
-```sh
-docker build -t garage:0.0.1-SNAPSHOT .
-```
-
-### 🚀 Running the application with Docker Compose
-
-```sh
-docker compose up
-```
-
-## 📄 Swagger
-
-| Ambiente | Url                                                     | 
-|----------|---------------------------------------------------------|
-| local    | [link](http://localhost:8080/api/swagger-ui/index.html) |
-
-## 🌐 Curls
-
-- Health check
-
-```sh
-curl --location 'http://localhost:8080/api/actuator/health'
-```
-
-- Creating Employee
-
-```sh
-curl --location 'http://localhost:8080/api/v1/employees' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username": "john@garage.com",
-    "password": "Garage@2026",
-    "name": "John",
-    "email": "john@garage.com",
-    "cpf": "664.260.660-44"
-}'
-```
-
-- Authenticating
-
-```sh
-curl --location 'http://localhost:8080/api/auth/login' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "username": "john@garage.com",
-    "password": "Garage@2026"
-}'
-```
-
-- Fetching Employees
-
-```sh
-curl --location 'http://localhost:8080/api/v1/employees' \
---header 'Authorization: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb2huQGdhcmFnZS5jb20iLCJpYXQiOjE3Nzc2MDczOTEsImV4cCI6MTc3NzYxMDk5MX0.Fzwy1Ii8gnpgUtZBRUsZWf8WJgoum-dUNmhNFd6SldgHEW9L6fKLF_xWB6mkVaZ0iQJyZszuhUtNrK64LxUcaQ'
-```
-
-## 🚀 CI/CD
-
-**IaC**
-
-- Follow the `iac/README.md` instructions to enable CI/CD pipe-line.
-
-**Gitflow**
-```mermaid
 ---
-config:
-  logLevel: 'debug'
-  theme: 'base'
-  gitGraph:
-    showBranches: true
-    showCommitLabel: true
-    mainBranchOrder: 1
----
-gitGraph
-  commit id: "e3f946 (main)" tag: "v1.0.0"
-  
-%% hotfix
-  branch hotfix/new-fix
-  checkout hotfix/new-fix
-  commit id: "e3f946 (hotfix)"
-  commit id: "commit (hotfix)"
-  
-%% develop
-  checkout main
-  branch develop order: 2
-  checkout develop
-  commit id: "e3f946 (dev)"
-  
-%% feature1
-  checkout develop
-  branch feature/new-feature-1 order: 4
-  checkout feature/new-feature-1
-  commit id: "e3f946 (feature1)"
-  commit id: "commit1 (feature1)"
-  commit id: "commit2 (feature1)"
-  
-%% feature2
-  checkout develop
-  branch feature/new-feature-2 order: 5
-  checkout feature/new-feature-2
-  commit id: "e3f946 (feature2)"
-  commit id: "commit (feature2)"
 
-%% merge features on develop
-  checkout develop
-  merge feature/new-feature-1 id: "merge (feature1)"
-  checkout develop
-  merge feature/new-feature-2 id: "merge (feature2)"
+## ⚙️ 4. Passos para Execução e Deploy
 
-%% release
-  checkout develop
-  branch release/1.0.1-new-release order: 1
-  checkout release/1.0.1-new-release
-  cherry-pick id: "merge (feature2)" parent: "commit (feature2)"
-  commit id: "commit (release)"
+### 4.1. Execução Local com Docker Compose
+Para subir a aplicação rapidamente junto com o banco PostgreSQL local:
 
-%% merge release on main
-  checkout main
-  merge hotfix/new-fix tag: "v1.0.1a" id: "merge (hotfix)"
-  checkout main
-  merge release/1.0.1-new-release tag: "v1.0.1" id: "merge (release)"
+```bash
+# 1. Compilar o projeto sem rodar testes
+mvn clean package -DskipTests
+
+# 2. Iniciar os contêineres da aplicação e banco
+docker compose up -d
+
+# 3. Acompanhar os logs
+docker compose logs -f api
 ```
 
-## 📌 Versão
+### 4.2. Execução Local via Maven
+```bash
+# Exportar variáveis de banco se necessário
+export SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/garage_db"
+export SPRING_DATASOURCE_USERNAME="postgres"
+export SPRING_DATASOURCE_PASSWORD="password"
 
-- Using [SemVer](https://semver.org/) for version control.
+# Executar a aplicação
+mvn spring-boot:run -pl application
+```
 
-## ✒ Autores
+### 4.3. Deploy no Kubernetes (AWS EKS) via Helm
+Com o `kubectl` conectado ao cluster AWS EKS (`techchallenge-cluster`):
 
-- [Rodrigo de Sordi - RM372537](https://github.com/rodsordi)
+```bash
+helm upgrade --install api-garage helm \
+  --namespace garage \
+  --set image.repository=890958457263.dkr.ecr.us-east-1.amazonaws.com/garage-api \
+  --set image.tag=latest \
+  --wait --timeout 3m
+```
 
+### 4.4. Deploy Automatizado (CI/CD via GitHub Actions)
+O repositório conta com pipeline automatizada em `.github/workflows/workflow-develop.yml`:
+1. **Quality Assurance**: Execução de testes unitários e cobertura com Jacoco.
+2. **Security**: Varredura de vulnerabilidades OWASP.
+3. **Build Image**: Geração da imagem Docker e push para o **AWS ECR** (`garage-api`).
+4. **Deploy**: Instalação e atualização automática no **AWS EKS** via Helm.
+
+---
+
+## 📑 5. Link para o Swagger e Postman das APIs
+
+### 🌐 Swagger UI / OpenAPI 3:
+* **Execução Local**: [http://localhost:8080/api/swagger-ui/index.html](http://localhost:8080/api/swagger-ui/index.html)
+* **Especificação OpenAPI JSON (Local)**: [http://localhost:8080/api/v3/api-docs](http://localhost:8080/api/v3/api-docs)
+* **Ambiente AWS (via AWS API Gateway)**:
+  ```
+  https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/swagger-ui/index.html
+  ```
+* **OpenAPI JSON na AWS**:
+  ```
+  https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v3/api-docs
+  ```
+
+### 📬 Coleção Postman / cURL de Exemplo:
+Para importar no Postman ou testar no terminal:
+
+```bash
+# 1. Health Check
+curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/actuator/health'
+
+# 2. Cadastro de Cliente (Autenticado com Token Bearer)
+curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v1/customers' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <SEU_TOKEN_JWT>' \
+--data-raw '{
+    "name": "Maria Oliveira",
+    "document": "529.982.247-25",
+    "email": "maria@email.com",
+    "phone": "11999999999"
+}'
+
+# 3. Consulta de Ordem de Serviço
+curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v1/orders' \
+--header 'Authorization: Bearer <SEU_TOKEN_JWT>'
+```
