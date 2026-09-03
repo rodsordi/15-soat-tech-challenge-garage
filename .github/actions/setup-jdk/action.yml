@@ -5,8 +5,9 @@ runs:
   using: 'composite'
   steps:
     - name: JDK 25 config
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v4
       with:
         java-version: '25'
         distribution: 'temurin'
         cache: maven
+
