@@ -102,6 +102,7 @@
                         <configuration>
                             <failBuildOnCVSS>7</failBuildOnCVSS>
                             <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                            <dataDirectory>${user.home}/.owasp/dependency-check-data</dataDirectory>
                             <formats>
                                 <format>HTML</format>
                             </formats>
@@ -109,6 +110,7 @@
                                 <suppressionFile>${maven.multiModuleProjectDirectory}/dependency-check-suppression.xml</suppressionFile>
                             </suppressionFiles>
                         </configuration>
+
                         <executions>
                             <execution>
                                 <goals>

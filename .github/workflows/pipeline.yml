@@ -55,6 +55,18 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Get Date for OWASP Cache
+        id: owasp-cache-key
+        run: echo "date=$(date +'%Y-%U')" >> $GITHUB_OUTPUT
+
+      - name: Cache OWASP Dependency-Check Database
+        uses: actions/cache@v4
+        with:
+          path: ~/.owasp/dependency-check-data
+          key: owasp-data-${{ runner.os }}-${{ steps.owasp-cache-key.outputs.date }}
+          restore-keys: |
+            owasp-data-${{ runner.os }}-
+
       - name: Generate OWASP Dependency-Check report
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
