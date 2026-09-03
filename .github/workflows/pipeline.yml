@@ -6,6 +6,9 @@ on:
       - develop
   workflow_dispatch:
 
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   quality-assurance:
     name: "Unit Tests & Code Coverage"
@@ -15,16 +18,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup JDK
-        uses: ./.github/actions/setup-jdk
+      - name: Setup Java 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Unit Tests and Code Coverage
         run: mvn -B clean test jacoco:report
 
       - name: SonarQube Analysis
-        if: secrets.SONAR_TOKEN != ''
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ env.SONAR_TOKEN != '' }}
         run: |
           mvn -B verify sonar:sonar \
             -Dsonar.host.url=https://sonarcloud.io \
@@ -34,15 +41,19 @@ jobs:
 
   security:
     name: "OWASP Security Analysis"
-    needs: quality-assurance
+    needs: [quality-assurance]
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup JDK
-        uses: ./.github/actions/setup-jdk
+      - name: Setup Java 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Generate OWASP Dependency-Check report
         env:
@@ -60,15 +71,19 @@ jobs:
 
   build:
     name: "Build & Push Docker Image to ECR"
-    needs: security
+    needs: [security]
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup JDK
-        uses: ./.github/actions/setup-jdk
+      - name: Setup Java 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml -DskipTests
@@ -79,7 +94,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Amazon ECR
         id: login-ecr
@@ -97,7 +112,7 @@ jobs:
 
   deploy:
     name: "Deploy to Amazon EKS Cluster"
-    needs: build
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
@@ -110,13 +125,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Update Kubeconfig & Deploy to EKS
         run: |
-          aws eks update-kubeconfig --region ${{ secrets.AWS_REGION || 'us-east-1' }} --name techchallenge-cluster
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name techchallenge-cluster
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION || 'us-east-1' }}.amazonaws.com/garage-api:${{ github.sha }}"
+          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/garage-api:${{ github.sha }}"
           echo "Deploying image to EKS: $ECR_IMAGE"
           kubectl -n garage set image deployment/api-garage api-garage=$ECR_IMAGE
           kubectl -n garage rollout status deployment/api-garage --timeout=5m
