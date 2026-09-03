@@ -122,7 +122,7 @@ helm upgrade --install api-garage helm \
 ```
 
 ### 4.4. Deploy Automatizado (CI/CD via GitHub Actions)
-O repositório conta com pipeline automatizada em `.github/workflows/workflow-develop.yml`:
+O repositório conta com pipeline automatizada em `.github/workflows/pipeline.yml` (disparada exclusivamente na branch `master`):
 1. **Quality Assurance**: Execução de testes unitários e cobertura com Jacoco.
 2. **Security**: Varredura de vulnerabilidades OWASP.
 3. **Build Image**: Geração da imagem Docker e push para o **AWS ECR** (`garage-api`).

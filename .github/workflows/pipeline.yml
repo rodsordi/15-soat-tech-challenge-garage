@@ -3,7 +3,7 @@ name: "API Garage CI/CD Pipeline"
 on:
   push:
     branches:
-      - develop
+      - master
   workflow_dispatch:
 
 env:
