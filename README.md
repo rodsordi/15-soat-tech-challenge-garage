@@ -79,7 +79,13 @@ graph TD
 
 ## ⚙️ 4. Passos para Execução e Deploy
 
+> [!CAUTION]
+> **DIRETRIZ MANDATÓRIA DE DEVSECOPS: NUNCA MAPEAR DADOS SENSÍVEIS NO CÓDIGO FONTE**
+> É **estritamente proibido** comitar senhas, tokens de API, chaves secretas ou credenciais em arquivos de código fonte, arquivos de propriedades (`application.properties`, `.yaml`), manifests Helm ou scripts.
+> Todos os valores sensíveis (senhas de banco, credenciais AWS, chaves do New Relic) **devem ser configurados exclusivamente nos Segredos da Pipeline (GitHub Actions Secrets)** e consumidos via variáveis de ambiente injetadas em tempo de execução.
+
 ### 4.1. Execução Local com Docker Compose
+
 Para subir a aplicação rapidamente junto com o banco PostgreSQL local:
 
 ```bash
