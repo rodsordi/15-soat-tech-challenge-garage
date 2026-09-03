@@ -53,19 +53,16 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
-      - name: Update Kubeconfig for EKS
+      - name: Deploy to AWS EKS
         if: ${{ env.AWS_ACCESS_KEY_ID != '' || secrets.AWS_ACCESS_KEY_ID != '' }}
         run: |
           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION || 'us-east-1' }} --name techchallenge-cluster
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION || 'us-east-1' }}.amazonaws.com/garage-api:${{ github.sha }}"
+          echo "Deploying image to EKS: $ECR_IMAGE"
+          kubectl -n garage set image deployment/api-garage api-garage=$ECR_IMAGE
+          kubectl -n garage rollout status deployment/api-garage --timeout=5m
 
-      - name: Deploy with Helm on AWS EKS
-        if: ${{ env.AWS_ACCESS_KEY_ID != '' || secrets.AWS_ACCESS_KEY_ID != '' }}
-        run: |
-          helm upgrade --install api-garage helm \
-            --namespace garage \
-            --create-namespace \
-            --set image.tag=${{ github.sha }} \
-            --wait --timeout 5m
 
       - name: Diagnose failed deploy
         if: failure()

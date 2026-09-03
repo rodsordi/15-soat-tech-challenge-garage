@@ -11,11 +11,8 @@ service:
   nodePort: 30080
 
 env:
-  SPRING_PROFILES_ACTIVE: local
-  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
-  SPRING_DATASOURCE_USERNAME: postgres
-  SPRING_DATASOURCE_PASSWORD: postgres
-  SPRING_CLOUD_AWS_SQS_ENDPOINT: http://floci:4566
+  SPRING_PROFILES_ACTIVE: prod
+
 
 probes:
   enabled: false
