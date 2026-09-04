@@ -17,7 +17,6 @@
 
     <modules>
         <module>domain</module>
-        <module>infra</module>
         <module>application</module>
         <module>iandt</module>
         <module>stress</module>
@@ -168,20 +167,6 @@
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>br.com.fiap</groupId>
-                <artifactId>api-garage.infra</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>br.com.fiap</groupId>
-                <artifactId>api-garage.infra</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <type>test-jar</type>
-                <classifier>tests</classifier>
-                <scope>test</scope>
-            </dependency>
 
             <dependency>
                 <groupId>br.com.fiap</groupId>
