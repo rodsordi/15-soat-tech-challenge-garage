@@ -231,6 +231,10 @@
                         </executions>
                         <configuration>
                             <imageName>api-garage</imageName>
+                            <buildArgs>
+                                <buildArg>-Ob</buildArg>
+                                <buildArg>-J-Xmx6g</buildArg>
+                            </buildArgs>
                         </configuration>
                     </plugin>
                 </plugins>
