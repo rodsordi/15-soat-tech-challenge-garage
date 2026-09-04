@@ -57,7 +57,9 @@ jobs:
           cache: 'maven'
 
       - name: Build Native Executable with GraalVM
-        run: mvn -B -Pnative package --file pom.xml -DskipTests
+        run: |
+          mvn -B -Pnative package --file pom.xml -DskipTests
+          ls -lh application/target/api-garage
 
       - name: Configure AWS Credentials (AWS Academy Support)
         uses: aws-actions/configure-aws-credentials@v4
