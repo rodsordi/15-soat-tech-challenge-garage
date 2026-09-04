@@ -1,0 +1,25 @@
+# Runtime minimal image based on Debian Bookworm Slim
+FROM debian:bookworm-slim
+
+# Install ca-certificates and curl for healthchecks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user and group
+RUN groupadd -g 1000 appgroup && \
+    useradd -u 1000 -g appgroup -d /app -s /bin/false appuser
+
+WORKDIR /app
+
+# Copy the compiled GraalVM native binary from application target
+COPY --chown=appuser:appgroup application/target/api-garage api-garage
+
+RUN chmod +x api-garage
+
+USER appuser
+
+EXPOSE 8080
+
+ENTRYPOINT ["/app/api-garage"]

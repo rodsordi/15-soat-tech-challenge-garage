@@ -3,7 +3,7 @@ package br.com.fiap.garage.application.v1.dto;
 import br.com.fiap.garage.application.v1.controller.NotificationController;
 import br.com.fiap.garage.application.v1.mapper.NotificationDtoMapper;
 import br.com.fiap.garage.domain.entity.Notification;
-import br.com.fiap.garage.infra.def.NotificationDef;
+import br.com.fiap.garage.application.adapter.def.NotificationDef;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;

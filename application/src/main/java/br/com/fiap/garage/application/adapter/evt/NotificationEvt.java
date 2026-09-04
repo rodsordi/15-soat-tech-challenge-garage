@@ -1,10 +1,12 @@
-package br.com.fiap.garage.application.v1.msg;
+package br.com.fiap.garage.application.adapter.evt;
 
-import br.com.fiap.garage.application.adapter.def.EmailDef;
+import br.com.fiap.garage.application.adapter.def.NotificationDef;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -12,9 +14,9 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor(access = PRIVATE)
 @Builder
-public class EmailListenMsg implements EmailDef.Request {
+public class NotificationEvt implements NotificationDef.Request {
 
-    private String recipient;
-    private String subject;
-    private String message;
+    private UUID externalId;
+
+    private EmailEvt email;
 }

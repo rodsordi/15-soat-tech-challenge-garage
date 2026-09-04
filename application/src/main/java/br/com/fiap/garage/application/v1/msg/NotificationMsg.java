@@ -1,6 +1,6 @@
 package br.com.fiap.garage.application.v1.msg;
 
-import br.com.fiap.garage.infra.def.NotificationDef;
+import br.com.fiap.garage.application.adapter.def.NotificationDef;
 import lombok.*;
 
 import java.util.UUID;

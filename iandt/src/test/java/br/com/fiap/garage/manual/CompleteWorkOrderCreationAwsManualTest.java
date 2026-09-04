@@ -53,6 +53,8 @@ public class CompleteWorkOrderCreationAwsManualTest {
 
     private static final Random random = new Random();
 
+    private static final String DEFAULT_KEYCLOAK_TOKEN_URI = "http://a3c63e7e0fb384a4c8c29ea5e43c9e17-1683280248.us-east-1.elb.amazonaws.com:8080/realms/garage/protocol/openid-connect/token";
+
     private String authorization;
 
     @BeforeAll
@@ -63,47 +65,34 @@ public class CompleteWorkOrderCreationAwsManualTest {
 
     @BeforeEach
     void authenticate() {
-        var uniqueSuffix = UUID.randomUUID().toString().substring(0, 8);
-        var username = "admin_aws_" + uniqueSuffix + "@garage.com";
-        var password = "Password123!";
-        var cpf = generateValidCpf();
+        var keycloakTokenUri = System.getProperty("garage.keycloak-token-uri",
+                System.getenv().getOrDefault("GARAGE_KEYCLOAK_TOKEN_URI", DEFAULT_KEYCLOAK_TOKEN_URI));
+        var username = System.getProperty("garage.keycloak-username",
+                System.getenv().getOrDefault("GARAGE_KEYCLOAK_USERNAME", "12345678909"));
+        var password = System.getProperty("garage.keycloak-password",
+                System.getenv().getOrDefault("GARAGE_KEYCLOAK_PASSWORD", "Test@1234"));
+        var clientId = System.getProperty("garage.keycloak-client-id",
+                System.getenv().getOrDefault("GARAGE_KEYCLOAK_CLIENT_ID", "garage-client"));
 
-        var requestBody = create_EmployeeDto_Request().withAllFields();
-        setField(requestBody, "username", username);
-        setField(requestBody, "cpf", cpf);
-        setField(requestBody, "email", username);
-        setField(requestBody, "password", password);
-
-        var employeeResponse = given()
+        var tokenResponse = given()
                 .log().all()
-                .contentType(JSON)
-                .body(json.writeValueAsString(requestBody))
-                .post("/v1/employees")
+                .baseUri(keycloakTokenUri)
+                .contentType("application/x-www-form-urlencoded")
+                .formParam("grant_type", "password")
+                .formParam("client_id", clientId)
+                .formParam("username", username)
+                .formParam("password", password)
+                .post()
                 .then()
                 .log().all()
                 .extract()
                 .response();
-        assertThat(employeeResponse.statusCode()).isEqualTo(201);
 
-        var loginPayload = String.format("""
-                {
-                  "username": "%s",
-                  "password": "%s"
-                }
-                """, username, password);
+        assertThat(tokenResponse.statusCode()).isEqualTo(200);
+        var token = tokenResponse.jsonPath().getString("access_token");
+        assertThat(token).isNotBlank();
 
-        var loginResponse = given()
-                .log().all()
-                .contentType(JSON)
-                .body(loginPayload)
-                .post("/auth/login")
-                .then()
-                .log().all()
-                .extract()
-                .response();
-        assertThat(loginResponse.statusCode()).isEqualTo(200);
-
-        authorization = MessageFormat.format("Bearer {0}", loginResponse.jsonPath().getString("token"));
+        authorization = MessageFormat.format("Bearer {0}", token);
     }
 
     @DisplayName("When executing the complete work order creation flow against AWS infrastructure")

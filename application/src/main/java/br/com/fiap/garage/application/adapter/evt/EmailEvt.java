@@ -1,4 +1,4 @@
-package br.com.fiap.garage.application.v1.msg;
+package br.com.fiap.garage.application.adapter.evt;
 
 import br.com.fiap.garage.application.adapter.def.EmailDef;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 @AllArgsConstructor(access = PRIVATE)
 @Builder
-public class EmailListenMsg implements EmailDef.Request {
+public class EmailEvt implements EmailDef.Request {
 
     private String recipient;
     private String subject;

@@ -1,6 +1,6 @@
 package br.com.fiap.garage.application.v1.dto;
 
-import br.com.fiap.garage.infra.def.EmailDef;
+import br.com.fiap.garage.application.adapter.def.EmailDef;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

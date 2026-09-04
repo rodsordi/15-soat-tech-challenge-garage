@@ -66,14 +66,6 @@
 
         <dependency>
             <groupId>br.com.fiap</groupId>
-            <artifactId>api-garage.infra</artifactId>
-            <type>test-jar</type>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>br.com.fiap</groupId>
             <artifactId>api-garage.domain</artifactId>
             <type>test-jar</type>
             <classifier>tests</classifier>
