@@ -1,24 +1,12 @@
-# Runtime minimal image based on Debian Bookworm Slim
-FROM debian:bookworm-slim
-
-# Install ca-certificates and curl for healthchecks
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create non-root user and group
-RUN groupadd -g 1000 appgroup && \
-    useradd -u 1000 -g appgroup -d /app -s /bin/false appuser
+# Minimal Distroless image with glibc and nonroot user (UID 65532)
+FROM gcr.io/distroless/base-debian12:nonroot
 
 WORKDIR /app
 
 # Copy the compiled GraalVM native binary from application target
-COPY --chown=appuser:appgroup application/target/api-garage api-garage
+COPY --chown=nonroot:nonroot application/target/api-garage api-garage
 
-RUN chmod +x api-garage
-
-USER appuser
+USER nonroot:nonroot
 
 EXPOSE 8080
 
