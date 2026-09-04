@@ -297,6 +297,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-micrometer-tracing-opentelemetry</artifactId>
+        </dependency>
+
         <!-- Vulnerability -->
         <dependency>
             <groupId>io.opentelemetry.semconv</groupId>
