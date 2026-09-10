@@ -50,10 +50,11 @@ jobs:
 
       - name: Configure Swap Space for GraalVM
         run: |
-          sudo fallocate -l 10G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          sudo swapoff -a || true
+          sudo fallocate -l 10G /swapfile_graalvm
+          sudo chmod 600 /swapfile_graalvm
+          sudo mkswap /swapfile_graalvm
+          sudo swapon /swapfile_graalvm
           free -h
 
       - name: Setup GraalVM 25
