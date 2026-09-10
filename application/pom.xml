@@ -233,7 +233,7 @@
                             <imageName>api-garage</imageName>
                             <buildArgs>
                                 <buildArg>-Ob</buildArg>
-                                <buildArg>-J-Xmx6g</buildArg>
+                                <buildArg>-J-Xmx10g</buildArg>
                             </buildArgs>
                         </configuration>
                     </plugin>
