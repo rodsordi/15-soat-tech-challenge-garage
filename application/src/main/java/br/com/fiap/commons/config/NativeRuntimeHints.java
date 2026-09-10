@@ -55,28 +55,5 @@ public class NativeRuntimeHints implements RuntimeHintsRegistrar {
         hints.reflection().registerType(OneToManyPersister.class,
                 MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
                 MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS);
-
-        java.util.List.of(
-                br.com.fiap.garage.domain.entity.Customer.class,
-                br.com.fiap.garage.domain.entity.Employee.class,
-                br.com.fiap.garage.domain.entity.Vehicle.class,
-                br.com.fiap.garage.domain.entity.Email.class,
-                br.com.fiap.garage.domain.entity.Notification.class,
-                br.com.fiap.garage.domain.entity.Material.class,
-                br.com.fiap.garage.domain.entity.InventoryMaterial.class,
-                br.com.fiap.garage.domain.entity.Service.class,
-                br.com.fiap.garage.domain.entity.EstimatedService.class,
-                br.com.fiap.garage.domain.entity.EstimatedMaterial.class,
-                br.com.fiap.garage.domain.entity.WorkOrder.class,
-                br.com.fiap.commons.entity.AuditableEntity.class,
-                br.com.fiap.commons.entity.ImmutableAuditableEntity.class,
-                br.com.fiap.garage.domain.enums.MaterialType.class,
-                br.com.fiap.garage.domain.enums.WorkOrderStatus.class
-        ).forEach(type -> hints.reflection().registerType(type,
-                MemberCategory.INVOKE_DECLARED_CONSTRUCTORS,
-                MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
-                MemberCategory.INVOKE_DECLARED_METHODS,
-                MemberCategory.INVOKE_PUBLIC_METHODS,
-                MemberCategory.DECLARED_FIELDS));
     }
 }

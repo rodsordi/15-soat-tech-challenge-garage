@@ -22,8 +22,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @NoArgsConstructor(access = PROTECTED)
 @SuperBuilder
 @EqualsAndHashCode(callSuper = false, exclude = "id")
-@Entity
-@Table(schema = "garage")
+@Entity(name = "GarageService")
+@Table(name = "service", schema = "garage")
 public class Service extends AuditableEntity implements Serializable {
 
     private static final ServiceMapper MAPPER = getMapper(ServiceMapper.class);
