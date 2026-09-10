@@ -26,18 +26,12 @@ public final class EmployeeAssertions {
         // Self
         assertThat(actual.getId())
                 .isNull();
-        assertThat(actual.getUsername())
-                .isEqualTo("john.doe@garage.com");
-        assertThat(actual.getPassword())
-                .isEqualTo("1a2s3d4f");
         assertThat(actual.getName())
                 .isEqualTo("John");
         assertThat(actual.getEmail())
                 .isEqualTo("john.doe@garage.com");
         assertThat(actual.getCpf())
                 .isEqualTo("69005975059");
-        assertThat(actual.getAuthorities())
-                .isNullOrEmpty();
 
         // Inheritance (AuditableEntity)
         assertThat(actual.getCreatedAt())
@@ -58,18 +52,12 @@ public final class EmployeeAssertions {
         // Self
         assertThat(actual.getId())
                 .hasToString("22e9c194-562a-4029-9bc1-ed37e0a80966");
-        assertThat(actual.getUsername())
-                .isNull();
-        assertThat(actual.getPassword())
-                .isNull();
         assertThat(actual.getName())
                 .isNull();
         assertThat(actual.getEmail())
                 .isNull();
         assertThat(actual.getCpf())
                 .isNull();
-        assertThat(actual.getAuthorities())
-                .isNullOrEmpty();
 
         // Inheritance (AuditableEntity)
         assertThat(actual.getCreatedAt())

@@ -26,8 +26,6 @@ public final class CustomerDto {
     @AllArgsConstructor(access = PRIVATE)
     @Schema(name = "Customer.Request")
     public static class Request implements CustomerDef.Request {
-        private String username;
-        private String password;
         private String name;
         private String email;
         private String document;
@@ -46,7 +44,6 @@ public final class CustomerDto {
     @Schema(name = "Customer.Response")
     public static class Response implements CustomerDef.Response {
         private UUID id;
-        private String username;
         private String name;
         private String email;
         private String document;
@@ -68,7 +65,6 @@ public final class CustomerDto {
     @Schema(name = "Customer.Representation")
     public static class Representation extends RepresentationModel<Representation> implements CustomerDef.Representation {
         private UUID id;
-        private String username;
         private String name;
         private String email;
         private String document;

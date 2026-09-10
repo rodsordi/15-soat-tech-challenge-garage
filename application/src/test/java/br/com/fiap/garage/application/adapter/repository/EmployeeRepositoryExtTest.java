@@ -45,8 +45,6 @@ class EmployeeRepositoryExtTest {
                 //Scenario
                 var employee = create_Employee()
                         .withAllFieldsExceptDB();
-                employee.getAuthorities()
-                        .forEach(authority -> em.persist(authority));
                 employee = em.merge(employee);
                 em.flush();
                 setField(employee, "createdAt", newDateTime("13/12/2026 23:59:59"));
@@ -91,8 +89,6 @@ class EmployeeRepositoryExtTest {
                 //Scenario
                 var employee = create_Employee()
                         .withAllFieldsExceptDB();
-                employee.getAuthorities()
-                        .forEach(authority -> em.persist(authority));
                 setField(employee, "cpf", "03739169060");
                 repository.save(employee);
                 em.flush();

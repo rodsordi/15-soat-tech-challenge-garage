@@ -30,8 +30,6 @@ public final class EmployeeDtoAssertions {
             // Self
             assertThat(actual.getId())
                     .hasToString("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
-            assertThat(actual.getUsername())
-                    .isEqualTo("john.doe@garage.com");
             assertThat(actual.getName())
                     .isEqualTo("John Doe");
             assertThat(actual.getEmail())
@@ -70,8 +68,6 @@ public final class EmployeeDtoAssertions {
             // Self
             assertThat(actual.getId())
                     .hasToString("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
-            assertThat(actual.getUsername())
-                    .isEqualTo("john.doe@garage.com");
             assertThat(actual.getName())
                     .isEqualTo("John Doe");
             assertThat(actual.getEmail())

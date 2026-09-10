@@ -54,7 +54,7 @@ public class NotificationEvtMapper {
                 .orElseThrow(() -> new ResourceNotFoundException(Customer.class));
 
         var recipient = Optional.of(customer)
-                .map(User::getEmail)
+                .map(Customer::getEmail)
                 .orElseThrow(() -> new FieldNotFoundException(Customer.class, "email"));
 
         var emailBody = buildEmailBody(workOrder);
@@ -81,12 +81,12 @@ public class NotificationEvtMapper {
                 .orElseThrow(() -> new ResourceNotFoundException(Customer.class));
 
         var customerName = Optional.of(customer)
-                .map(User::getName)
+                .map(Customer::getName)
                 .orElseThrow(() -> new FieldNotFoundException(Customer.class, "name"));
 
         var employeeName = Optional.of(workOrder)
                 .map(WorkOrder::getEmployee)
-                .map(User::getName)
+                .map(Employee::getName)
                 .orElseThrow(() -> new FieldNotFoundException(Employee.class, "name"));
 
         var services = buildEstimatedServiceList(workOrder.getEstimatedServices());
@@ -96,8 +96,8 @@ public class NotificationEvtMapper {
                 .orElseThrow(() -> new FieldNotFoundException(WorkOrder.class, "totalAmount"));
 
         var customerUsername = Optional.of(customer)
-                .map(User::getUsername)
-                .orElseThrow(() -> new FieldNotFoundException(Customer.class, "username"));
+                .map(Customer::getDocument)
+                .orElseThrow(() -> new FieldNotFoundException(Customer.class, "document"));
 
         var emailBody = loadEmailFile();
 

@@ -22,9 +22,7 @@ public final class CustomerDtoFactory {
         public CustomerDto.Request withAllFields() {
             var result = builder
                     // Self
-                    .username("john.doe@example.com")
                     .name("John Doe")
-                    .password("1234asdl")
                     .email("john.doe@example.com")
                     .document("27.614.623/0001-00")
                     // Composition
@@ -39,9 +37,7 @@ public final class CustomerDtoFactory {
 
         public CustomerDto.Request valid() {
             return builder
-                    .username("john.doe@example.com")
                     .name("John Doe")
-                    .password("1234asdl")
                     .email("john.doe@example.com")
                     .document("27.614.623/0001-00")
                     .build();

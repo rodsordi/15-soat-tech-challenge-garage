@@ -21,11 +21,7 @@ public interface EmployeeDef {
 
     interface Represented {
 
-        @Schema(example = "jack.doe", description = "Employee username.")
-        @Size(max = 255)
-        String getUsername();
-
-        @Schema(example = "Jack Doe", description = "Employee password.")
+        @Schema(example = "Jack Doe", description = "Employee name.")
         @NotBlank
         @Size(max = 255)
         String getName();
@@ -60,10 +56,6 @@ public interface EmployeeDef {
 
     interface Request extends Detailed {
 
-        @Schema(example = "ComplexPassword@2026", description = "Employee id.")
-        @NotBlank
-        @Size(max = 60)
-        String getPassword();
     }
 
     interface Response extends Detailed, DetailedPersisted {

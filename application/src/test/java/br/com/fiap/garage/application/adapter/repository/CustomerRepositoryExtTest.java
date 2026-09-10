@@ -45,8 +45,6 @@ class CustomerRepositoryExtTest {
                 //Scenario
                 var customer = create_Customer()
                         .withAllFieldsExceptDB();
-                customer.getAuthorities()
-                        .forEach(authority -> em.persist(authority));
                 customer = em.merge(customer);
                 em.flush();
                 setField(customer, "createdAt", newDateTime("13/12/2026 23:59:59"));
@@ -91,8 +89,6 @@ class CustomerRepositoryExtTest {
                 //Scenario
                 var customer = create_Customer()
                         .withAllFieldsExceptDB();
-                customer.getAuthorities()
-                        .forEach(authority -> em.persist(authority));
                 setField(customer, "document", "86855874000146");
                 repository.save(customer);
                 em.flush();

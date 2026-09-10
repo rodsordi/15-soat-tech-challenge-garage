@@ -15,20 +15,18 @@ import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.text.MessageFormat;
+import br.com.fiap.garage.config.SecurityTestConfig;
+import org.springframework.context.annotation.Import;
+
 import java.util.List;
 import java.util.Map;
 
-import static br.com.fiap.garage.application.v1.dto.factory.EmployeeDtoFactory.create_EmployeeDto_Request;
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
 import static java.lang.String.format;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.core.env.Profiles.of;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static software.amazon.awssdk.services.sqs.model.QueueAttributeName.QUEUE_ARN;
 
 @Slf4j
+@Import(SecurityTestConfig.class)
 public abstract class GarageIntegrationTest implements PostgresSetup, LocalStackSetup {
 
     @Autowired
@@ -94,40 +92,6 @@ public abstract class GarageIntegrationTest implements PostgresSetup, LocalStack
     }
 
     private void authenticate() {
-        var requestBody = create_EmployeeDto_Request()
-                .withAllFields();
-        setField(requestBody, "username", "admin@garage.com");
-        setField(requestBody, "cpf", "904.434.710-10");
-        setField(requestBody, "email", "admin@garage.com");
-        setField(requestBody, "password", "abcd1234");
-
-        var response = given()
-                .log().all()
-                .contentType(JSON)
-                .body(json.writeValueAsString(requestBody))
-                .post("/v1/employees")
-                .then()
-                .log().all()
-                .extract()
-                .response();
-        assertThat(response.statusCode())
-                .isEqualTo(201);
-
-        response = given()
-                .log().all()
-                .contentType(JSON)
-                .body("""
-                        {
-                          "username": "admin@garage.com",
-                          "password": "abcd1234"
-                        }
-                        """)
-                .post("/auth/login")
-                .then()
-                .log().all()
-                .extract()
-                .response();
-        assertThat(response.statusCode()).isEqualTo(200);
-        authorization = MessageFormat.format("Bearer {0}", response.jsonPath().getString("token"));
+        authorization = "Bearer test-integration-token";
     }
 }

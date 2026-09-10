@@ -41,7 +41,7 @@ public class WorkOrderCreationUseCase {
 
     private Employee findEmployee(WorkOrder workOrder) {
         var employeeId = Optional.of(workOrder.getEmployee())
-                .map(User::getId)
+                .map(Employee::getId)
                 .orElseThrow(() -> new ResourceNotFoundException(Employee.class, "id", null));
 
         return employeeRepository.findById(employeeId)

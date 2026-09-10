@@ -20,8 +20,6 @@ public final class EmployeeDtoFactory {
 
         public EmployeeDto.Request withAllFields() {
             var result = builder
-                    .username("john.doe@garage.com")
-                    .password("1a2s3d4f")
                     .name("John")
                     .email("john.doe@garage.com")
                     .cpf("690.059.750-59")
@@ -33,8 +31,6 @@ public final class EmployeeDtoFactory {
 
         public EmployeeDto.Request valid() {
             return builder
-                    .username("jack.doe@garage.com")
-                    .password("1a2s3d4f")
                     .name("Jack")
                     .email("jack.doe@garage.com")
                     .cpf("939.043.210-30")

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static br.com.fiap.garage.domain.entity.factory.CustomerFactory.create_Customer;
 import static java.util.UUID.fromString;
@@ -28,9 +27,6 @@ class CustomerCreationUseCaseTest {
     @Mock
     private CustomerRepository repository;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
-
     @DisplayName("When creating Customer")
     @Nested
     class Create {
@@ -47,8 +43,6 @@ class CustomerCreationUseCaseTest {
                             setField(customer, "id", fromString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577"));
                             return customer;
                         });
-                when(passwordEncoder.encode(any()))
-                        .thenAnswer(invocation -> invocation.getArgument(0));
             }
 
             @DisplayName("Given a Customer with all fields")

@@ -27,10 +27,6 @@ public final class CustomerAssertions {
         // Self
         assertThat(actual.getId())
                 .isNull();
-        assertThat(actual.getUsername())
-                .isEqualTo("john.doe@example.com");
-        assertThat(actual.getPassword())
-                .isEqualTo("1234asdl");
         assertThat(actual.getName())
                 .isEqualTo("John Doe");
         assertThat(actual.getEmail())
@@ -41,8 +37,6 @@ public final class CustomerAssertions {
         // Composition
         assertThat_Vehicle(actual.getVehicles().stream().findFirst().orElseThrow())
                 .wasConvertedFrom_VehicleDto_Request();
-        assertThat(actual.getAuthorities())
-                .isNullOrEmpty();
 
         // Inheritance (AuditableEntity)
         assertThat(actual.getCreatedAt())
@@ -63,18 +57,12 @@ public final class CustomerAssertions {
         // Self
         assertThat(actual.getId())
                 .hasToString("5b3b7f42-0a9f-4093-82af-a7db99131e7c");
-        assertThat(actual.getUsername())
-                .isNull();
-        assertThat(actual.getPassword())
-                .isNull();
         assertThat(actual.getName())
                 .isNull();
         assertThat(actual.getEmail())
                 .isNull();
         assertThat(actual.getDocument())
                 .isNull();
-        assertThat(actual.getAuthorities())
-                .isNullOrEmpty();
 
         // Inheritance (AuditableEntity)
         assertThat(actual.getCreatedAt())

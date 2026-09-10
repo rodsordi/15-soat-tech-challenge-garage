@@ -1,79 +1,46 @@
 CREATE SCHEMA IF NOT EXISTS garage;
 
 -- ---------------------------------------------------------
--- AUTHORITY
--- ---------------------------------------------------------
-CREATE TABLE garage.auth (
-                                  id UUID NOT NULL,
-                                  authority VARCHAR(20) NOT NULL,
-                                  created_at TIMESTAMP NOT NULL,
-                                  updated_at TIMESTAMP,
-                                  CONSTRAINT pk_auth PRIMARY KEY (id)
-);
-
-COMMENT ON COLUMN garage.auth.id IS 'Authorization id. Owner: db';
-COMMENT ON COLUMN garage.auth.authority IS 'Authorization name. Owner: self';
-COMMENT ON COLUMN garage.auth.created_at IS 'Register created at. Owner: db';
-COMMENT ON COLUMN garage.auth.updated_at IS 'Register updated at. Owner: db';
-
--- ---------------------------------------------------------
--- USERS
--- ---------------------------------------------------------
-CREATE TABLE garage.users (
-                              id UUID NOT NULL,
-                              username VARCHAR(255) NOT NULL,
-                              password VARCHAR(60) NOT NULL,
-                              name VARCHAR(255) NOT NULL,
-                              email VARCHAR(255) NOT NULL,
-                              created_at TIMESTAMP NOT NULL,
-                              updated_at TIMESTAMP,
-                              CONSTRAINT pk_users PRIMARY KEY (id),
-                              CONSTRAINT uk_users_username UNIQUE (username),
-                              CONSTRAINT uk_users_email UNIQUE (email)
-);
-
-COMMENT ON COLUMN garage.users.id IS 'User id. Owner: db';
-COMMENT ON COLUMN garage.users.username IS 'Username. Owner: self';
-COMMENT ON COLUMN garage.users.password IS 'User password. Owner: self';
-COMMENT ON COLUMN garage.users.name IS 'User name. Owner: self';
-COMMENT ON COLUMN garage.users.email IS 'User e-mail. Owner: self';
-COMMENT ON COLUMN garage.users.created_at IS 'Register created at. Owner: db';
-COMMENT ON COLUMN garage.users.updated_at IS 'Register updated at. Owner: db';
-
--- ---------------------------------------------------------
--- USERS_AUTHORITY (Join Table)
--- ---------------------------------------------------------
-CREATE TABLE garage.users_auth (
-                                        user_id UUID NOT NULL,
-                                        auth_id UUID NOT NULL,
-                                        CONSTRAINT pk_users_auth PRIMARY KEY (user_id, auth_id),
-                                        CONSTRAINT fk_users_auth_user FOREIGN KEY (user_id) REFERENCES garage.users(id),
-                                        CONSTRAINT fk_users_auth_auth FOREIGN KEY (auth_id) REFERENCES garage.auth(id)
-);
-
--- ---------------------------------------------------------
--- CUSTOMER (Inherits from USERS)
+-- CUSTOMER
 -- ---------------------------------------------------------
 CREATE TABLE garage.customer (
                                  id UUID NOT NULL,
-                                 document VARCHAR(14) NOT NULL unique,
+                                 name VARCHAR(255) NOT NULL,
+                                 email VARCHAR(255) NOT NULL,
+                                 document VARCHAR(14) NOT NULL UNIQUE,
+                                 created_at TIMESTAMP NOT NULL,
+                                 updated_at TIMESTAMP,
                                  CONSTRAINT pk_customer PRIMARY KEY (id),
-                                 CONSTRAINT fk_customer_users FOREIGN KEY (id) REFERENCES garage.users(id)
+                                 CONSTRAINT uk_customer_email UNIQUE (email)
 );
 
+COMMENT ON COLUMN garage.customer.id IS 'Customer id. Owner: db';
+COMMENT ON COLUMN garage.customer.name IS 'Customer name. Owner: self';
+COMMENT ON COLUMN garage.customer.email IS 'Customer e-mail. Owner: self';
 COMMENT ON COLUMN garage.customer.document IS 'Customer document (CPF/CNPJ). Owner: self';
+COMMENT ON COLUMN garage.customer.created_at IS 'Register created at. Owner: db';
+COMMENT ON COLUMN garage.customer.updated_at IS 'Register updated at. Owner: db';
 
 -- ---------------------------------------------------------
--- EMPLOYEE (Inherits from USERS)
+-- EMPLOYEE
 -- ---------------------------------------------------------
 CREATE TABLE garage.employee (
                                  id UUID NOT NULL,
-                                 cpf VARCHAR(11) NOT NULL unique,
+                                 name VARCHAR(255) NOT NULL,
+                                 email VARCHAR(255) NOT NULL,
+                                 cpf VARCHAR(11) NOT NULL UNIQUE,
+                                 created_at TIMESTAMP NOT NULL,
+                                 updated_at TIMESTAMP,
                                  CONSTRAINT pk_employee PRIMARY KEY (id),
-                                 CONSTRAINT fk_employee_users FOREIGN KEY (id) REFERENCES garage.users(id)
+                                 CONSTRAINT uk_employee_email UNIQUE (email)
 );
 
+COMMENT ON COLUMN garage.employee.id IS 'Employee id. Owner: db';
+COMMENT ON COLUMN garage.employee.name IS 'Employee name. Owner: self';
+COMMENT ON COLUMN garage.employee.email IS 'Employee e-mail. Owner: self';
 COMMENT ON COLUMN garage.employee.cpf IS 'Employee cpf. Owner: self';
+COMMENT ON COLUMN garage.employee.created_at IS 'Register created at. Owner: db';
+COMMENT ON COLUMN garage.employee.updated_at IS 'Register updated at. Owner: db';
 
 -- ---------------------------------------------------------
 -- VEHICLE

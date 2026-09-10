@@ -22,12 +22,7 @@ public interface CustomerDef {
 
     interface Represented {
 
-        @Schema(example = "john.doe", description = "Customer username.")
-        @NotBlank
-        @Size(max = 255)
-        String getUsername();
-
-        @Schema(example = "John Doe", description = "Customer password.")
+        @Schema(example = "John Doe", description = "Customer name.")
         @NotBlank
         @Size(max = 255)
         String getName();
@@ -61,11 +56,6 @@ public interface CustomerDef {
     }
 
     interface Request extends Detailed {
-
-        @Schema(example = "ComplexPassword@2026", description = "Customer id.")
-        @NotBlank
-        @Size(max = 60)
-        String getPassword();
 
         <T extends VehicleDef.Request> Set<T> getVehicles();
     }

@@ -90,6 +90,7 @@ class EmployeeSearchTest extends GarageIntegrationTest {
             void test2() {
                 //Scenario
                 var scenarioRequestBody = create_EmployeeDto_Request().withAllFields();
+                setField(scenarioRequestBody, "cpf", "904.434.710-10");
                 createEmployee(json, scenarioRequestBody);
                 //When
                 var response = given()
