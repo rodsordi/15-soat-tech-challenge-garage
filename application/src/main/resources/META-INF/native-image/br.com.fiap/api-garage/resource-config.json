@@ -1,0 +1,18 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "db/migration/.*"
+      },
+      {
+        "pattern": "db/migrations/.*"
+      },
+      {
+        "pattern": ".*\\.sql$"
+      },
+      {
+        "pattern": ".*\\.html$"
+      }
+    ]
+  }
+}
