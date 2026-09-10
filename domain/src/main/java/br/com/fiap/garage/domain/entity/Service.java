@@ -1,7 +1,6 @@
 package br.com.fiap.garage.domain.entity;
 
 import br.com.fiap.commons.entity.AuditableEntity;
-import br.com.fiap.garage.domain.mapper.ServiceMapper;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,20 +12,18 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.FetchType.EAGER;
 import static lombok.AccessLevel.PROTECTED;
-import static org.mapstruct.factory.Mappers.getMapper;
 
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SuperBuilder
 @EqualsAndHashCode(callSuper = false, exclude = "id")
-@Entity(name = "GarageService")
-@Table(name = "service", schema = "garage")
+@Entity
+@Table(schema = "garage")
 public class Service extends AuditableEntity implements Serializable {
-
-    private static final ServiceMapper MAPPER = getMapper(ServiceMapper.class);
 
     @Id
     @GeneratedValue
@@ -72,7 +69,26 @@ public class Service extends AuditableEntity implements Serializable {
     }
 
     public EstimatedService buildEstimatedService() {
-        return MAPPER.convert(this);
+        Set<EstimatedMaterial> estimatedMaterials = null;
+        if (this.materials != null) {
+            estimatedMaterials = this.materials.stream()
+                    .map(m -> EstimatedMaterial.builder()
+                            .materialId(m.getId())
+                            .type(m.getType())
+                            .name(m.getName())
+                            .description(m.getDescription())
+                            .cost(m.getCost())
+                            .build())
+                    .collect(Collectors.toSet());
+        }
+
+        return EstimatedService.builder()
+                .serviceId(this.id)
+                .name(this.name)
+                .description(this.description)
+                .cost(this.cost)
+                .estimatedMaterials(estimatedMaterials)
+                .build();
     }
 
     public void updateMaterialsReference(Set<Material> materials) {
