@@ -5,12 +5,14 @@ import br.com.fiap.garage.application.v1.msg.NotificationMsg;
 import br.com.fiap.garage.domain.use_case.NotificationCreationUseCase;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
 @RequiredArgsConstructor
 @Component
+@ConditionalOnProperty(name = "spring.cloud.aws.sqs.enabled", havingValue = "true")
 public class NotificationListener {
 
     private static final NotificationMsgMapper MAPPER = getMapper(NotificationMsgMapper.class);
