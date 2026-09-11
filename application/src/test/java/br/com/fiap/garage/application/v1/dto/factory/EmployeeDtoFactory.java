@@ -4,6 +4,7 @@ import br.com.fiap.garage.application.v1.dto.EmployeeDto;
 import lombok.RequiredArgsConstructor;
 
 import static br.com.fiap.commons.util.ReflectionUtil.assertThatObject;
+import static java.util.UUID.fromString;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -20,6 +21,7 @@ public final class EmployeeDtoFactory {
 
         public EmployeeDto.Request withAllFields() {
             var result = builder
+                    .id(fromString("7a403fc9-3c96-408c-984f-1fea2729b59f"))
                     .name("John")
                     .email("john.doe@garage.com")
                     .cpf("690.059.750-59")

@@ -76,7 +76,9 @@ class CustomerControllerTest {
                 when(customerCreationUseCase.create(any()))
                         .thenAnswer(invocationOnMock -> {
                             Customer customer = invocationOnMock.getArgument(0);
-                            setField(customer, "id", fromString("7a403fc9-3c96-408c-984f-1fea2729b59f"));
+                            if (customer.getId() == null) {
+                                setField(customer, "id", fromString("7a403fc9-3c96-408c-984f-1fea2729b59f"));
+                            }
                             return customer;
                         });
             }
@@ -96,7 +98,28 @@ class CustomerControllerTest {
                         //Then
                         .andDo(print())
                         .andExpect(status().isCreated())
-                        .andExpect(jsonPath("$.id", is("7a403fc9-3c96-408c-984f-1fea2729b59f")));
+                        .andExpect(jsonPath("$.id", is("36c9df52-01eb-4ffd-a0c1-1494440aedef")));
+            }
+
+            @DisplayName("Given a customer with explicit Keycloak id")
+            @Test
+            void test2() throws Exception {
+                //Given
+                var keycloakId = fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+                var requestBody = create_CustomerDto_Request()
+                        .withAllFields();
+                setField(requestBody, "id", keycloakId);
+
+                //When
+                mockMvc.perform(post("/v1/customers")
+                                .contentType(APPLICATION_JSON)
+                                .accept(APPLICATION_JSON)
+                                .characterEncoding(UTF_8.name())
+                                .content(gson.toJson(requestBody)))
+                        //Then
+                        .andDo(print())
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.id", is("3fa85f64-5717-4562-b3fc-2c963f66afa6")));
             }
         }
 

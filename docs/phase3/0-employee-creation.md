@@ -1,6 +1,6 @@
 ## Diagrama de Sequência
 
-**Cadastro de Funcionários**
+**Cadastro de Funcionários (Orquestração no Backend com Compensação Saga)**
 
 ```mermaid
 sequenceDiagram
@@ -10,26 +10,35 @@ sequenceDiagram
     participant lambda as Lambda (garage-auth-handler)
     participant keycloak as Keycloak (IdP / OIDC)
     participant keycloakDb as PostgreSQL (Keycloak DB)
-    participant apiGateway as AWS API Gateway
     participant apiGarage as api-garage (Resource Server)
     participant garageDb as PostgreSQL (Garage DB)
 
-    Note over admin,front: 1. Provisionamento de Credenciais e Acesso (Keycloak)
+    Note over admin,front: Solicitação de Cadastro Autenticada (Admin)
     admin->>front: Cadastra funcionário (nome, email, CPF, senha, cargo)
-    front->>lambda: POST /register (role: EMPLOYEE, document: CPF)
-    lambda->>lambda: Valida documento (Módulo 11 da Receita Federal)
+    front->>lambda: POST /register (Authorization: Bearer Admin_JWT) { role: "EMPLOYEE", name, email, document: CPF, password }
+    
+    Note over lambda,keycloakDb: 1. Validação RBAC e Provisionamento IAM
+    lambda->>lambda: Valida permissão do Admin e Módulo 11 (CPF)
     lambda->>keycloak: POST /admin/realms/garage/users (Bearer Admin Token)
-    keycloak->>keycloakDb: Salva credenciais e permissões do usuário
+    keycloak->>keycloakDb: Salva credenciais e role EMPLOYEE
     keycloakDb-->>keycloak: Confirma persistência
-    keycloak-->>lambda: Retorna 201 Created (ID Keycloak)
-    lambda-->>front: Retorna 201 Created (Usuário registrado com sucesso)
+    keycloak-->>lambda: Retorna 201 Created (keycloak_user_id)
 
-    Note over admin,garageDb: 2. Cadastro Operacional no Catálogo da Oficina (api-garage)
-    front->>apiGateway: POST /v1/employees (Authorization: Bearer JWT)
-    apiGateway->>apiGarage: POST /v1/employees (Authorization: Bearer JWT)
-    apiGarage->>apiGarage: Valida JWT via JWKS (Stateless)
-    apiGarage->>garageDb: Salva funcionário/mecânico (garage.employee)
-    garageDb-->>apiGarage: Retorna funcionário persistido
-    apiGarage-->>apiGateway: Retorna 201 Created com dados e ID do funcionário
-    apiGateway-->>front: Retorna 201 Created com dados e ID do funcionário
+    Note over lambda,garageDb: 2. Propagação Transacional via Rede Privada (VPC)
+    lambda->>apiGarage: POST /v1/employees (Internal VPC / Service Token) { id: keycloak_user_id, name, email, cpf }
+
+    alt Sucesso no Catálogo da Oficina
+        apiGarage->>garageDb: Salva funcionário (garage.employee.id = keycloak_user_id)
+        garageDb-->>apiGarage: Confirma persistência
+        apiGarage-->>lambda: Retorna 201 Created
+        lambda-->>front: Retorna 201 Created (Onboarding Concluído)
+    else Falha no Catálogo da Oficina (Compensação Saga / Rollback)
+        apiGarage-->>lambda: Erro (4xx / 5xx / Timeout)
+        Note over lambda,keycloak: Rollback Saga: expurga credencial órfã no Keycloak
+        lambda->>keycloak: DELETE /admin/realms/garage/users/{keycloak_user_id}
+        keycloak->>keycloakDb: Remove usuário
+        keycloakDb-->>keycloak: Removido
+        keycloak-->>lambda: 204 No Content (Rollback concluído)
+        lambda-->>front: Retorna 502 Bad Gateway (Operação revertida, tente novamente)
+    end
 ```

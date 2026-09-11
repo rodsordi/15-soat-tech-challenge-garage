@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ScenarioTestContext {
 
-    private String authorization = "Bearer e2e-integration-token";
+    private String authorization = br.com.fiap.garage.e2e.config.E2eConfig.getAuthToken();
     private String customerId;
     private String vehicleId;
     private String employeeId;
@@ -17,6 +17,7 @@ public class ScenarioTestContext {
     private Response lastResponse;
 
     public void reset() {
+        authorization = br.com.fiap.garage.e2e.config.E2eConfig.getAuthToken();
         customerId = null;
         vehicleId = null;
         employeeId = null;

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import static br.com.fiap.commons.util.ReflectionUtil.assertThatObject;
 import static br.com.fiap.garage.application.v1.dto.factory.VehicleDtoFactory.create_VehicleDto_Request;
+import static java.util.UUID.fromString;
 import static lombok.AccessLevel.PRIVATE;
 
 @RequiredArgsConstructor(access = PRIVATE)
@@ -22,6 +23,7 @@ public final class CustomerDtoFactory {
         public CustomerDto.Request withAllFields() {
             var result = builder
                     // Self
+                    .id(fromString("36c9df52-01eb-4ffd-a0c1-1494440aedef"))
                     .name("John Doe")
                     .email("john.doe@example.com")
                     .document("27.614.623/0001-00")

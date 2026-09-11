@@ -2,6 +2,7 @@ package br.com.fiap.garage.domain.entity;
 
 import br.com.fiap.commons.entity.AuditableEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,16 @@ import static lombok.AccessLevel.PROTECTED;
 public class Employee extends AuditableEntity implements Serializable {
 
     @Id
-    @GeneratedValue
+    @Builder.Default
     @Column(comment = "Employee id. Owner: db")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
+
+    @PrePersist
+    public void prePersist() {
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
+        }
+    }
 
     @Column(nullable = false, comment = "Employee name. Owner: self")
     private String name;

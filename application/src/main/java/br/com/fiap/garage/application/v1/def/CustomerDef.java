@@ -57,6 +57,10 @@ public interface CustomerDef {
 
     interface Request extends Detailed {
 
+        @JsonProperty(index = 0)
+        @Schema(example = "3fa85f64-5717-4562-b3fc-2c963f66afa6", description = "Customer id (optional, Keycloak user ID).")
+        UUID getId();
+
         <T extends VehicleDef.Request> Set<T> getVehicles();
     }
 

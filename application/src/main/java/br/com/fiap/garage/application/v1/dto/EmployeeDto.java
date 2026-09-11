@@ -25,6 +25,7 @@ public final class EmployeeDto {
     @AllArgsConstructor(access = PRIVATE)
     @Schema(name = "Employee.Request")
     public static class Request implements EmployeeDef.Request {
+        private UUID id;
         private String name;
         private String email;
         private String cpf;

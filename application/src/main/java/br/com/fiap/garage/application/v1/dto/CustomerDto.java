@@ -26,6 +26,7 @@ public final class CustomerDto {
     @AllArgsConstructor(access = PRIVATE)
     @Schema(name = "Customer.Request")
     public static class Request implements CustomerDef.Request {
+        private UUID id;
         private String name;
         private String email;
         private String document;

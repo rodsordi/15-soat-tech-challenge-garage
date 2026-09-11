@@ -26,7 +26,7 @@ public final class CustomerAssertions {
     public void wasConvertedFrom_CustomerDto_Request() {
         // Self
         assertThat(actual.getId())
-                .isNull();
+                .hasToString("36c9df52-01eb-4ffd-a0c1-1494440aedef");
         assertThat(actual.getName())
                 .isEqualTo("John Doe");
         assertThat(actual.getEmail())

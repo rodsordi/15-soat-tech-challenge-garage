@@ -73,7 +73,9 @@ class EmployeeControllerTest {
                 when(employeeCreationUseCase.create(any()))
                         .thenAnswer(invocationOnMock -> {
                             Employee employee = invocationOnMock.getArgument(0);
-                            setField(employee, "id", fromString("7a403fc9-3c96-408c-984f-1fea2729b59f"));
+                            if (employee.getId() == null) {
+                                setField(employee, "id", fromString("7a403fc9-3c96-408c-984f-1fea2729b59f"));
+                            }
                             return employee;
                         });
             }
@@ -94,6 +96,27 @@ class EmployeeControllerTest {
                         .andDo(print())
                         .andExpect(status().isCreated())
                         .andExpect(jsonPath("$.id", is("7a403fc9-3c96-408c-984f-1fea2729b59f")));
+            }
+
+            @DisplayName("Given an employee with explicit Keycloak id")
+            @Test
+            void test2() throws Exception {
+                //Given
+                var keycloakId = fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+                var requestBody = create_EmployeeDto_Request()
+                        .withAllFields();
+                setField(requestBody, "id", keycloakId);
+
+                //When
+                mockMvc.perform(post("/v1/employees")
+                                .contentType(APPLICATION_JSON)
+                                .accept(APPLICATION_JSON)
+                                .characterEncoding(UTF_8.name())
+                                .content(gson.toJson(requestBody)))
+                        //Then
+                        .andDo(print())
+                        .andExpect(status().isCreated())
+                        .andExpect(jsonPath("$.id", is("3fa85f64-5717-4562-b3fc-2c963f66afa6")));
             }
         }
     }

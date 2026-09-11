@@ -25,7 +25,7 @@ public final class EmployeeAssertions {
     public void wasConvertedFrom_EmployeeDto_Request() {
         // Self
         assertThat(actual.getId())
-                .isNull();
+                .hasToString("7a403fc9-3c96-408c-984f-1fea2729b59f");
         assertThat(actual.getName())
                 .isEqualTo("John");
         assertThat(actual.getEmail())

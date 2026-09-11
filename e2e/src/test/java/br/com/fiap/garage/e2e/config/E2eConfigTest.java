@@ -1,5 +1,6 @@
 package br.com.fiap.garage.e2e.config;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,8 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("E2E Configuration Tests")
 class E2eConfigTest {
 
+    @BeforeEach
     @AfterEach
-    void tearDown() {
+    void resetSystemProperties() {
         System.clearProperty("env");
         System.clearProperty("garage.base-uri");
         System.clearProperty("garage.auth.token");
