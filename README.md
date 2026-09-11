@@ -283,11 +283,11 @@ O repositório conta com pipeline automatizada em `.github/workflows/pipeline.ym
 * **Especificação OpenAPI JSON (Local)**: [http://localhost:8080/api/v3/api-docs](http://localhost:8080/api/v3/api-docs)
 * **Ambiente AWS (via AWS API Gateway)**:
   ```
-  https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/swagger-ui/index.html
+  https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api/swagger-ui/index.html
   ```
 * **OpenAPI JSON na AWS**:
   ```
-  https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v3/api-docs
+  https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api/v3/api-docs
   ```
 
 ### 📬 Coleção Postman / cURL de Exemplo:
@@ -295,10 +295,10 @@ Para importar no Postman ou testar no terminal:
 
 ```bash
 # 1. Health Check
-curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/actuator/health'
+curl --location 'https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api/actuator/health'
 
 # 2. Cadastro de Cliente (Autenticado com Token Bearer)
-curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/v1/customers' \
+curl --location 'https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api/v1/customers' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <SEU_TOKEN_JWT>' \
 --data-raw '{
@@ -309,7 +309,7 @@ curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/v1/c
 }'
 
 # 3. Consulta de Ordem de Serviço
-curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/v1/orders' \
+curl --location 'https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api/v1/orders' \
 --header 'Authorization: Bearer <SEU_TOKEN_JWT>'
 ```
 
