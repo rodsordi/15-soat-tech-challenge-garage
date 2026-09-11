@@ -70,6 +70,12 @@ flowchart TB
             RDSKeycloak[("AWS RDS PostgreSQL<br/>keycloak_db (IAM / Credenciais)")]
         end
 
+        subgraph Messaging ["Camada de Mensageria Assíncrona & Event-Driven"]
+            SNSTopic["AWS SNS Topic<br/>api-garage_notification-creation_topic"]
+            SQSQueue["AWS SQS Queue<br/>api-garage_notification-creation_queue"]
+            SQSDLQ["AWS SQS DLQ (Dead Letter Queue)<br/>api-garage_notification-creation_queue_dlq"]
+        end
+
         subgraph Observability ["Observabilidade & Monitoramento"]
             NewRelic["New Relic One (APM Centralizado)<br/>Distributed Tracing / JVM Metrics / Transaction Logs"]
             CloudWatch["AWS CloudWatch<br/>Lambda Logs / VPC Flow Logs / Alertas"]
@@ -89,6 +95,11 @@ flowchart TB
 
     APIGarage -->|"Pool HikariCP - Transações ACID"| RDSGarage
     KeycloakApp -->|"Conexão JDBC"| RDSKeycloak
+
+    APIGarage -->|"4. Publica Evento (WAITING_FOR_APPROVAL)"| SNSTopic
+    SNSTopic -->|"Fanout / Subscrição"| SQSQueue
+    SQSQueue -->|"5. Consumo Assíncrono (SqsListener)"| APIGarage
+    SQSQueue -.->|"Redrive (3 falhas)"| SQSDLQ
 
     APIGarage -.->|"Liveness e Readiness Probes"| Actuator
     APIGarage -.->|"New Relic Java Agent e OpenTelemetry"| NewRelic
@@ -112,10 +123,58 @@ flowchart TB
 5. **Camada de Persistência de Dados (*AWS RDS PostgreSQL*)**:
    - Hospedada em subnets privadas sem acesso público à internet.
    - Instância `garage_db` dedicada às tabelas de ordens de serviço, clientes, veículos, estoque e serviços; instância `keycloak_db` dedicada às credenciais de identidade.
-6. **Camada de Observabilidade e Confiabilidade (*SRE / APM*)**:
+6. **Camada de Mensageria Assíncrona & Event-Driven (*Amazon SNS & Amazon SQS*)**:
+   - **Amazon SNS (`api-garage_notification-creation_topic`)**: Tópico pub/sub responsável por receber eventos de alteração de estado no ciclo de vida da OS (ex: transição para `WAITING_FOR_APPROVAL`).
+   - **Amazon SQS (`api-garage_notification-creation_queue`)**: Fila bufferizada conectada via subscrição fanout ao SNS, permitindo processamento assíncrono confiável sem sobrecarregar o fluxo síncrono HTTP.
+   - **Amazon SQS DLQ (`api-garage_notification-creation_queue_dlq`)**: Dead Letter Queue com política de redrive (máximo de 3 tentativas) para isolamento de mensagens com falha e garantia de não-perda de dados.
+7. **Camada de Observabilidade e Confiabilidade (*SRE / APM*)**:
    - **New Relic One**: Monitoramento de telemetria completa (Distributed Tracing, tempo de resposta de endpoints, Throughput, métricas de JVM, Garbage Collection e logs unificados).
    - **Spring Boot Actuator**: Fornece os endpoints `/actuator/health` consumidos pelos Probes do Kubernetes (`livenessProbe` e `readinessProbe`) e `/actuator/prometheus` para métricas de microsserviço.
    - **AWS CloudWatch**: Armazena logs de execução da função Lambda, métricas de hardware do RDS e alarmes de infraestrutura.
+
+---
+
+### 🔄 Fluxo de Mensageria e Ciclo de Vida da Ordem de Serviço (Diagrama de Sequência)
+
+O diagrama abaixo ilustra o desacoplamento assíncrono acionado no ciclo de vida da Ordem de Serviço quando o diagnóstico do veículo é concluído e o status avança para `WAITING_FOR_APPROVAL`:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Mechanic as Mecânico / Atendente
+    participant API as api-garage (Spring Boot)
+    participant DB as AWS RDS (PostgreSQL)
+    participant SNS as AWS SNS (notification-creation_topic)
+    participant SQS as AWS SQS (notification-creation_queue)
+    participant Listener as SqsListener (api-garage)
+    actor Customer as Cliente (E-mail / Notificação)
+
+    Mechanic->>API: PATCH /v1/orders/{id}/diagnosis (Concluir Diagnóstico)
+    activate API
+    API->>DB: Atualiza status da OS para WAITING_FOR_APPROVAL
+    DB-->>API: OS atualizada com sucesso
+    
+    rect rgb(240, 248, 255)
+        note over API,SNS: Disparo Assíncrono Desacoplado (Pub/Sub)
+        API->>SNS: Publica NotificationEvt (SnsTemplate)
+        SNS-->>API: Confirmação de recebimento (Ack)
+        SNS->>SQS: Propagação Fanout (Subscrição SQS)
+    end
+    
+    API-->>Mechanic: 200 OK (Ordem de Serviço com status WAITING_FOR_APPROVAL)
+    deactivate API
+
+    rect rgb(245, 255, 250)
+        note over SQS,Customer: Processamento Assíncrono do Evento
+        SQS->>Listener: Entrega mensagem da fila (Polling Longo)
+        activate Listener
+        Listener->>API: Executa NotificationCreationUseCase
+        API->>DB: Registra notificação gerada
+        API->>Customer: Envia e-mail de aprovação do orçamento com link público
+        Listener-->>SQS: Confirma processamento e remove da fila (Ack)
+        deactivate Listener
+    end
+```
 
 ---
 
@@ -191,10 +250,10 @@ Para importar no Postman ou testar no terminal:
 
 ```bash
 # 1. Health Check
-curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/actuator/health'
+curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/actuator/health'
 
 # 2. Cadastro de Cliente (Autenticado com Token Bearer)
-curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v1/customers' \
+curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/v1/customers' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <SEU_TOKEN_JWT>' \
 --data-raw '{
@@ -205,7 +264,7 @@ curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v1/c
 }'
 
 # 3. Consulta de Ordem de Serviço
-curl --location 'https://igqc9vtfx9.execute-api.us-east-1.amazonaws.com/api/v1/orders' \
+curl --location 'https://8sggxeps4j.execute-api.us-east-1.amazonaws.com/api/v1/orders' \
 --header 'Authorization: Bearer <SEU_TOKEN_JWT>'
 ```
 
