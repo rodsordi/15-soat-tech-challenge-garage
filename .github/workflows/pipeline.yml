@@ -8,10 +8,17 @@ on:
 
 env:
   AWS_REGION: us-east-1
+  ECR_REPOSITORY: garage-api
+  EKS_CLUSTER_NAME: techchallenge-cluster
+  K8S_NAMESPACE: garage
+  K8S_DEPLOYMENT: api-garage
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Quality Gate & Unit Tests
+  # ---------------------------------------------------------------------------
   quality-assurance:
-    name: "Unit Tests & Code Coverage"
+    name: "1. Unit Tests & Code Coverage"
     runs-on: ubuntu-latest
 
     steps:
@@ -39,8 +46,11 @@ jobs:
             -Dsonar.qualitygate.wait=false
         continue-on-error: true
 
-  build-and-deploy:
-    name: "Build JAR, Push Docker Image & Deploy to EKS"
+  # ---------------------------------------------------------------------------
+  # 2. Build Application JAR (Artifact Factory - No Cloud Secrets Required)
+  # ---------------------------------------------------------------------------
+  build-package:
+    name: "2. Build Maven JAR Package"
     needs: [quality-assurance]
     runs-on: ubuntu-latest
 
@@ -55,8 +65,33 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build Application JAR with Maven
+      - name: Build Application JAR
         run: mvn -B package -pl application -am -DskipTests
+
+      - name: Upload JAR Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-garage-jar
+          path: application/target/api-garage.application-0.0.1-SNAPSHOT.jar
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # 3. Containerize & Publish to AWS ECR
+  # ---------------------------------------------------------------------------
+  containerize-and-publish:
+    name: "3. Containerize & Publish to AWS ECR"
+    needs: [build-package]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository (Dockerfile & Assets)
+        uses: actions/checkout@v4
+
+      - name: Download JAR Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api-garage-jar
+          path: application/target
 
       - name: Configure AWS Credentials (AWS Academy Support)
         uses: aws-actions/configure-aws-credentials@v4
@@ -73,18 +108,39 @@ jobs:
       - name: Build and Push Docker image to AWS ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: garage-api
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Update Kubeconfig & Deploy to EKS
+  # ---------------------------------------------------------------------------
+  # 4. Continuous Deployment to AWS EKS
+  # ---------------------------------------------------------------------------
+  deploy-eks:
+    name: "4. Deploy to AWS EKS"
+    needs: [containerize-and-publish]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS Credentials (AWS Academy Support)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update Kubeconfig
         run: |
-          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name techchallenge-cluster
+          aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
+
+      - name: Deploy Image & Verify Rollout Status
+        run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/garage-api:${{ github.sha }}"
+          ECR_IMAGE="${ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
           echo "Deploying image to EKS: $ECR_IMAGE"
-          kubectl -n garage set image deployment/api-garage api-garage=$ECR_IMAGE
-          kubectl -n garage rollout status deployment/api-garage --timeout=5m
+          kubectl -n ${{ env.K8S_NAMESPACE }} set image deployment/${{ env.K8S_DEPLOYMENT }} ${{ env.K8S_DEPLOYMENT }}=$ECR_IMAGE
+          kubectl -n ${{ env.K8S_NAMESPACE }} rollout status deployment/${{ env.K8S_DEPLOYMENT }} --timeout=5m
