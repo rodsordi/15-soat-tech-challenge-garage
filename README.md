@@ -76,6 +76,10 @@ flowchart TB
             SQSDLQ["AWS SQS DLQ (Dead Letter Queue)<br/>api-garage_notification-creation_queue_dlq"]
         end
 
+        subgraph Storage ["Camada de Armazenamento em Nuvem & Estado"]
+            S3Bucket[("Amazon S3 Bucket<br/>techchallenge-fiap-tfstate-890958457263<br/>(Remote State & Artefatos)")]
+        end
+
         subgraph Observability ["Observabilidade & Monitoramento"]
             NewRelic["New Relic One (APM Centralizado)<br/>Distributed Tracing / JVM Metrics / Transaction Logs"]
             CloudWatch["AWS CloudWatch<br/>Lambda Logs / VPC Flow Logs / Alertas"]
@@ -127,7 +131,9 @@ flowchart TB
    - **Amazon SNS (`api-garage_notification-creation_topic`)**: Tópico pub/sub responsável por receber eventos de alteração de estado no ciclo de vida da OS (ex: transição para `WAITING_FOR_APPROVAL`).
    - **Amazon SQS (`api-garage_notification-creation_queue`)**: Fila bufferizada conectada via subscrição fanout ao SNS, permitindo processamento assíncrono confiável sem sobrecarregar o fluxo síncrono HTTP.
    - **Amazon SQS DLQ (`api-garage_notification-creation_queue_dlq`)**: Dead Letter Queue com política de redrive (máximo de 3 tentativas) para isolamento de mensagens com falha e garantia de não-perda de dados.
-7. **Camada de Observabilidade e Confiabilidade (*SRE / APM*)**:
+7. **Camada de Armazenamento em Nuvem & Remote State (*Amazon S3*)**:
+   - **Bucket S3 (`techchallenge-fiap-tfstate-890958457263`)**: Armazenamento durável em nuvem com versionamento habilitado para isolamento e persistência centralizada do estado do Terraform (`tfstate`) e governança de artefatos de infraestrutura, com auto-provisionamento resiliente nas pipelines CI/CD.
+8. **Camada de Observabilidade e Confiabilidade (*SRE / APM*)**:
    - **New Relic One**: Monitoramento de telemetria completa (Distributed Tracing, tempo de resposta de endpoints, Throughput, métricas de JVM, Garbage Collection e logs unificados).
    - **Spring Boot Actuator**: Fornece os endpoints `/actuator/health` consumidos pelos Probes do Kubernetes (`livenessProbe` e `readinessProbe`) e `/actuator/prometheus` para métricas de microsserviço.
    - **AWS CloudWatch**: Armazena logs de execução da função Lambda, métricas de hardware do RDS e alarmes de infraestrutura.
@@ -175,6 +181,45 @@ sequenceDiagram
         deactivate Listener
     end
 ```
+
+### 📬 Especificação Técnica da Mensageria Assíncrona (SNS & SQS)
+
+A tabela abaixo consolida os dados operacionais e de infraestrutura da camada de mensageria assíncrona:
+
+| Recurso AWS | Identificador / Nome | Tipo | Propósito | Retenção / Timeout |
+| :--- | :--- | :--- | :--- | :--- |
+| **Amazon SNS Topic** | `api-garage_notification-creation_topic` | Pub/Sub Topic | Ponto de entrada de eventos emitidos pelo domínio na transição para `WAITING_FOR_APPROVAL` | N/A (Push imediato) |
+| **Amazon SQS Queue** | `api-garage_notification-creation_queue` | Standard Queue | Fila bufferizada conectada via subscrição Fanout ao SNS para consumo assíncrono seguro | 4 dias (345.600s) / Visibility: 30s |
+| **Amazon SQS DLQ** | `api-garage_notification-creation_queue_dlq` | Dead Letter Queue | Isolamento de mensagens após 3 falhas consecutivas de processamento (`maxReceiveCount = 3`) | 14 dias (1.209.600s) |
+
+#### Contrato do Evento Publicado (`NotificationEvt`)
+
+O evento serializado em JSON emitido no SNS e propagado para a fila SQS possui o seguinte payload:
+
+```json
+{
+  "workOrderId": "e48ad20c-69dd-4382-b567-0e02b2c3d480",
+  "customerName": "Rodrigo Sordi",
+  "customerEmail": "rodrigo.sordi@fiap.com.br",
+  "totalAmount": 1450.00,
+  "status": "WAITING_FOR_APPROVAL",
+  "approvalUrl": "http://localhost:8080/garage/orders/e48ad20c-69dd-4382-b567-0e02b2c3d480/approval"
+}
+```
+
+#### Variáveis de Ambiente da Aplicação
+
+| Variável | Padrão | Descrição |
+| :--- | :--- | :--- |
+| `SNS_ENABLED` | `true` | Ativa ou desativa a publicação de eventos via Amazon SNS (`spring.cloud.aws.sns.enabled`) |
+| `SQS_ENABLED` | `true` | Ativa ou desativa o listener consumidor de eventos via Amazon SQS (`spring.cloud.aws.sqs.enabled`) |
+| `NOTIFICATION_TOPIC` | `api-garage_notification-creation_topic` | Nome ou ARN do tópico SNS de destino |
+| `NOTIFICATION_QUEUE` | `api-garage_notification-creation_queue` | Nome ou ARN da fila SQS consumida pelo `@SqsListener` |
+
+#### Padrão de Resiliência & Tolerância a Falhas
+
+* **Graceful Degradation**: O componente publisher (`NotifyCustomerForApprovalPublisherImpl`) utiliza injeção de dependência opcional (`Optional<SnsTemplate>`) e bloco de captura defensivo (`try/catch`).
+* **Isolamento de Erros Externos**: Caso o tópico SNS esteja inalcançável, o pod esteja com credenciais temporárias expiradas do AWS Academy ou o serviço SNS sofra degradação de rede, a falha é registrada nos logs estruturados em JSON, **sem propagar erro HTTP 500** e sem interromper a transação da ordem de serviço.
 
 ---
 
