@@ -57,9 +57,11 @@ class E2eConfigTest {
             E2eConfig.loadProperties();
 
             assertThat(E2eConfig.getActiveEnv()).isEqualTo("prd");
-            assertThat(E2eConfig.getBaseUri()).isEqualTo("https://api-garage.fiap.com.br/api");
-            assertThat(E2eConfig.getProperty("garage.auth.type", null)).isEqualTo("oidc-keycloak");
+            assertThat(E2eConfig.getBaseUri()).isEqualTo("https://6t8e18w3f8.execute-api.us-east-1.amazonaws.com/api");
+            assertThat(E2eConfig.getAuthType()).isEqualTo("lambda");
+            assertThat(E2eConfig.getLambdaAuthUrl()).isEqualTo("https://xr26z2f6imttw4zwmiu7r4unlq0lzurl.lambda-url.us-east-1.on.aws");
         }
+
 
         @Test
         @DisplayName("Should resolve placeholder with environment variable or system property")

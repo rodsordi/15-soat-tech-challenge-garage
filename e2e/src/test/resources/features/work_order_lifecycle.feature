@@ -10,11 +10,13 @@ Funcionalidade: Ciclo de Vida Completo da Ordem de Serviço
   # ============================================================================
   Contexto:
     Dado que o sistema da oficina está em execução e operacional
+    E que o operador autentica no sistema através do serviço de autenticação
     E um cliente cadastrado com documento e e-mail únicos
     E um veículo cadastrado associado ao cliente
     E um funcionário mecânico cadastrado
     E um material de estoque cadastrado
     E um serviço cadastrado vinculado ao material
+
 
   # ============================================================================
   # Fluxo Principal: Ciclo de Vida Completo da Ordem de Serviço

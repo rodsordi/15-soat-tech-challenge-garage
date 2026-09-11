@@ -2,6 +2,7 @@ package br.com.fiap.garage.e2e.steps;
 
 import br.com.fiap.garage.application.v1.dto.WorkOrderDto;
 import br.com.fiap.garage.domain.enums.WorkOrderStatus;
+import br.com.fiap.garage.e2e.client.LambdaAuthClient;
 import br.com.fiap.garage.e2e.config.E2eConfig;
 import br.com.fiap.garage.e2e.context.ScenarioTestContext;
 import io.cucumber.java.Before;
@@ -59,6 +60,18 @@ public class WorkOrderLifecycleSteps {
 
         assertThat(response.statusCode()).isIn(200, 204);
     }
+
+    @Dado("que o operador autentica no sistema através do serviço de autenticação")
+    public void theOperatorAuthenticatesViaAuthService() {
+        if ("lambda".equalsIgnoreCase(E2eConfig.getAuthType())) {
+            var lambdaAuthClient = new LambdaAuthClient();
+            var token = lambdaAuthClient.authenticate();
+            context.setAuthorization(token);
+        } else {
+            context.setAuthorization(E2eConfig.getAuthToken());
+        }
+    }
+
 
     @Dado("um cliente cadastrado com documento e e-mail únicos")
     public void aRegisteredCustomerWithUniqueDocumentAndEmail() {

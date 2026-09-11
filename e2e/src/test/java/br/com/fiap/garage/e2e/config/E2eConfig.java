@@ -92,4 +92,21 @@ public final class E2eConfig {
         var propVal = properties.getProperty(key);
         return propVal != null ? resolvePlaceholders(propVal) : defaultValue;
     }
+
+    public static String getAuthType() {
+        return getProperty("garage.auth.type", "bearer-mock");
+    }
+
+    public static String getLambdaAuthUrl() {
+        return getProperty("garage.auth.lambda.url", "https://xr26z2f6imttw4zwmiu7r4unlq0lzurl.lambda-url.us-east-1.on.aws");
+    }
+
+    public static String getAuthUsername() {
+        return getProperty("garage.auth.lambda.username", "529.982.247-25");
+    }
+
+    public static String getAuthPassword() {
+        return getProperty("garage.auth.lambda.password", "SenhaForte@2026");
+    }
 }
+
