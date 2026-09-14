@@ -1,5 +1,9 @@
 package br.com.fiap.garage.e2e.config;
 
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -25,10 +29,25 @@ public final class E2eConfig {
 
         // 2. Identify active environment
         activeEnv = System.getProperty("env",
-                System.getenv().getOrDefault("E2E_ENV", properties.getProperty("e2e.env", "local")));
+                System.getenv().getOrDefault("E2E_ENV", properties.getProperty("e2e.env", "prd")));
 
         // 3. Load environment-specific properties
         loadResource("application-" + activeEnv + ".properties");
+
+        // 4. Configure REST Assured filters
+        configureRestAssuredFilters();
+    }
+
+    public static boolean isLoggingEnabled() {
+        return Boolean.parseBoolean(getProperty("e2e.logging.enabled", "true"));
+    }
+
+    public static void configureRestAssuredFilters() {
+        if (isLoggingEnabled()) {
+            RestAssured.replaceFiltersWith(new RequestLoggingFilter(), new ResponseLoggingFilter());
+        } else {
+            RestAssured.replaceFiltersWith(java.util.Collections.emptyList());
+        }
     }
 
     private static void loadResource(String filename) {

@@ -114,7 +114,7 @@ public class LambdaSteps {
 
     @Quando("uma requisição de cadastro corporativo é enviada ao Lambda com CNPJ válido e dados do veículo")
     public void aCorporateRegistrationRequestIsSentWithValidCnpjAndVehicleData() {
-        var cleanCnpj = "27614623000100";
+        var cleanCnpj = generateValidCnpjClean();
         var password = "Password@2026!";
 
         var vehicle = Map.of(
@@ -386,6 +386,40 @@ public class LambdaSteps {
         }
         int remainder2 = sum2 % 11;
         digits[10] = (remainder2 < 2) ? 0 : 11 - remainder2;
+
+        var sb = new StringBuilder();
+        for (int d : digits) {
+            sb.append(d);
+        }
+        return sb.toString();
+    }
+
+    private static String generateValidCnpjClean() {
+        var random = new Random();
+        var digits = new int[14];
+        for (int i = 0; i < 8; i++) {
+            digits[i] = random.nextInt(10);
+        }
+        digits[8] = 0;
+        digits[9] = 0;
+        digits[10] = 0;
+        digits[11] = 1;
+
+        int[] weights1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int sum1 = 0;
+        for (int i = 0; i < 12; i++) {
+            sum1 += digits[i] * weights1[i];
+        }
+        int remainder1 = sum1 % 11;
+        digits[12] = (remainder1 < 2) ? 0 : 11 - remainder1;
+
+        int[] weights2 = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int sum2 = 0;
+        for (int i = 0; i < 13; i++) {
+            sum2 += digits[i] * weights2[i];
+        }
+        int remainder2 = sum2 % 11;
+        digits[13] = (remainder2 < 2) ? 0 : 11 - remainder2;
 
         var sb = new StringBuilder();
         for (int d : digits) {

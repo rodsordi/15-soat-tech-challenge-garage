@@ -26,9 +26,9 @@ class E2eConfigTest {
     class LocalEnvironmentTests {
 
         @Test
-        @DisplayName("Should load default local properties when no environment is specified")
-        void shouldLoadDefaultLocalProperties() {
-            System.clearProperty("env");
+        @DisplayName("Should load local properties when env is local")
+        void shouldLoadLocalPropertiesWhenEnvIsLocal() {
+            System.setProperty("env", "local");
             E2eConfig.loadProperties();
 
             assertThat(E2eConfig.getActiveEnv()).isEqualTo("local");
@@ -39,6 +39,7 @@ class E2eConfigTest {
         @Test
         @DisplayName("Should override base URI via system property")
         void shouldOverrideBaseUriViaSystemProperty() {
+            System.setProperty("env", "local");
             System.setProperty("garage.base-uri", "http://custom-host:9090/api");
             E2eConfig.loadProperties();
 
@@ -49,6 +50,20 @@ class E2eConfigTest {
     @Nested
     @DisplayName("Production Environment Profile")
     class ProductionEnvironmentTests {
+
+        @Test
+        @DisplayName("Should load PRD properties by default when no environment is specified")
+        void shouldLoadDefaultPrdProperties() {
+            System.clearProperty("env");
+            System.setProperty("E2E_GARAGE_BASE_URI", "https://api.garage.prd/api");
+            System.setProperty("E2E_LAMBDA_AUTH_URL", "https://auth.garage.prd");
+            E2eConfig.loadProperties();
+
+            assertThat(E2eConfig.getActiveEnv()).isEqualTo("prd");
+            assertThat(E2eConfig.getBaseUri()).isEqualTo("https://api.garage.prd/api");
+            assertThat(E2eConfig.getAuthType()).isEqualTo("lambda");
+            assertThat(E2eConfig.getLambdaAuthUrl()).isEqualTo("https://auth.garage.prd");
+        }
 
         @Test
         @DisplayName("Should load PRD properties with defaults when env is prd")

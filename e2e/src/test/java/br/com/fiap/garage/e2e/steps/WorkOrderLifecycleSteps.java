@@ -5,7 +5,6 @@ import br.com.fiap.garage.domain.enums.WorkOrderStatus;
 import br.com.fiap.garage.e2e.client.LambdaAuthClient;
 import br.com.fiap.garage.e2e.config.E2eConfig;
 import br.com.fiap.garage.e2e.context.ScenarioTestContext;
-import io.cucumber.java.Before;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
 import io.cucumber.java.pt.Entao;
@@ -42,13 +41,6 @@ public class WorkOrderLifecycleSteps {
             .build();
 
     private final Random random = new Random();
-
-    @Before
-    public void setupScenario() {
-        context.reset();
-        RestAssured.baseURI = E2eConfig.getBaseUri();
-        context.setAuthorization(E2eConfig.getAuthToken());
-    }
 
     @Dado("que o sistema da oficina está em execução e operacional")
     public void theGarageSystemIsRunningAndOperational() {
