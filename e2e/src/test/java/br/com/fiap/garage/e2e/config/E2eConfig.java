@@ -98,7 +98,7 @@ public final class E2eConfig {
     }
 
     public static String getLambdaAuthUrl() {
-        return getProperty("garage.auth.lambda.url", "https://xr26z2f6imttw4zwmiu7r4unlq0lzurl.lambda-url.us-east-1.on.aws");
+        return getProperty("garage.auth.lambda.url", "https://25wfrx7qruoodzfh5nm4sk26ty0sldzb.lambda-url.us-east-1.on.aws");
     }
 
     public static String getAuthUsername() {

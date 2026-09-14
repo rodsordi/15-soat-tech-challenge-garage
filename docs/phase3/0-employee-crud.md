@@ -2,6 +2,9 @@
 
 **Cadastro de Funcionários (Orquestração no Backend com Compensação Saga)**
 
+<div style="overflow-x: auto; width: 100%;">
+<div style="min-width: 1300px;">
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -14,21 +17,21 @@ sequenceDiagram
     participant garageDb as PostgreSQL (Garage DB)
 
     Note over admin,front: Solicitação de Cadastro Autenticada (Admin)
-    admin->>front: Cadastra funcionário (nome, email, CPF, senha, cargo)
-    front->>lambda: POST /register (Authorization: Bearer Admin_JWT) { role: "EMPLOYEE", name, email, document: CPF, password }
+    admin->>front: Cadastra funcionário<br/>(nome, email, CPF, senha, cargo)
+    front->>lambda: POST /register<br/>(Authorization: Bearer Admin_JWT)<br/>{ role: "EMPLOYEE", name, email, document: CPF, password }
     
     Note over lambda,keycloakDb: 1. Validação RBAC e Provisionamento IAM
-    lambda->>lambda: Valida permissão do Admin e Módulo 11 (CPF)
-    lambda->>keycloak: POST /admin/realms/garage/users (Bearer Admin Token)
+    lambda->>lambda: Valida permissão do Admin<br/>e Módulo 11 (CPF)
+    lambda->>keycloak: POST /admin/realms/garage/users<br/>(Bearer Admin Token)
     keycloak->>keycloakDb: Salva credenciais e role EMPLOYEE
     keycloakDb-->>keycloak: Confirma persistência
     keycloak-->>lambda: Retorna 201 Created (keycloak_user_id)
 
     Note over lambda,garageDb: 2. Propagação Transacional via Rede Privada (VPC)
-    lambda->>apiGarage: POST /v1/employees (Internal VPC / Service Token) { id: keycloak_user_id, name, email, cpf }
+    lambda->>apiGarage: POST /v1/employees (Internal VPC / Service Token)<br/>{ id: keycloak_user_id, name, email, cpf }
 
     alt Sucesso no Catálogo da Oficina
-        apiGarage->>garageDb: Salva funcionário (garage.employee.id = keycloak_user_id)
+        apiGarage->>garageDb: Salva funcionário<br/>(garage.employee.id = keycloak_user_id)
         garageDb-->>apiGarage: Confirma persistência
         apiGarage-->>lambda: Retorna 201 Created
         lambda-->>front: Retorna 201 Created (Onboarding Concluído)
@@ -39,6 +42,9 @@ sequenceDiagram
         keycloak->>keycloakDb: Remove usuário
         keycloakDb-->>keycloak: Removido
         keycloak-->>lambda: 204 No Content (Rollback concluído)
-        lambda-->>front: Retorna 502 Bad Gateway (Operação revertida, tente novamente)
+        lambda-->>front: Retorna 502 Bad Gateway<br/>(Operação revertida, tente novamente)
     end
 ```
+
+</div>
+</div>

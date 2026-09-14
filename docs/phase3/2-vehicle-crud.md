@@ -2,6 +2,9 @@
 
 **Cadastro de Veículo**
 
+<div style="overflow-x: auto; width: 100%;">
+<div style="min-width: 1300px;">
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -15,9 +18,9 @@ sequenceDiagram
     participant garageDb as PostgreSQL (Garage DB)
 
     alt Autenticação
-        emp->>front: Solicita login (CPF / e-mail e senha)
-        front->>lambda: POST /auth/login { username, password }
-        lambda->>keycloak: POST /realms/garage/protocol/openid-connect/token (grant_type=password)
+        emp->>front: Solicita login<br/>(CPF / e-mail e senha)
+        front->>lambda: POST /auth/login<br/>{ username, password }
+        lambda->>keycloak: POST /realms/garage/protocol/openid-connect/token<br/>(grant_type=password)
         keycloak->>keycloakDb: Consulta usuário e valida credenciais
         keycloakDb-->>keycloak: Retorna dados do usuário
         keycloak-->>lambda: Retorna Access Token JWT (RS256)
@@ -25,12 +28,15 @@ sequenceDiagram
     end
 
     Note over emp,garageDb: Cadastro de Veículo Vinculado ao Cliente
-    emp->>front: Cadastra veículo (placa, modelo, marca, ano, id do cliente)
-    front->>apiGateway: POST /v1/vehicles (Authorization: Bearer JWT)
-    apiGateway->>apiGarage: POST /v1/vehicles (Authorization: Bearer JWT)
+    emp->>front: Cadastra veículo<br/>(placa, modelo, marca, ano, id do cliente)
+    front->>apiGateway: POST /v1/vehicles<br/>(Authorization: Bearer JWT)
+    apiGateway->>apiGarage: POST /v1/vehicles<br/>(Authorization: Bearer JWT)
     apiGarage->>apiGarage: Valida JWT via JWKS (Stateless)
-    apiGarage->>garageDb: Valida cliente e salva veículo (garage.vehicle)
+    apiGarage->>garageDb: Valida cliente e salva veículo<br/>(garage.vehicle)
     garageDb-->>apiGarage: Retorna id e dados do veículo
-    apiGarage-->>apiGateway: Retorna 201 Created com dados e id do veículo
-    apiGateway-->>front: Retorna 201 Created com dados e id do veículo
+    apiGarage-->>apiGateway: Retorna 201 Created<br/>com dados e id do veículo
+    apiGateway-->>front: Retorna 201 Created<br/>com dados e id do veículo
 ```
+
+</div>
+</div>
