@@ -8,7 +8,7 @@ Funcionalidade: Consulta de Usuário por CPF no Lambda Auth
   @consulta-usuario-existente
   Cenário: Consulta de usuário previamente cadastrado por CPF válido
     Dado que existe um usuário previamente cadastrado com CPF válido no sistema
-    Quando uma requisição de consulta por CPF é enviada ao endpoint "/users/{cpf}" do Lambda
+    Quando uma requisição de consulta por CPF do usuário cadastrado é enviada ao Lambda
     Então a resposta do Lambda deve ter status 200
     E o usuário retornado deve conter o CPF consultado e status cadastrado
 

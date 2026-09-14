@@ -69,10 +69,17 @@ public final class E2eConfig {
     public static String getBaseUri() {
         var fromSystem = System.getProperty("garage.base-uri",
                 System.getenv("GARAGE_BASE_URI"));
-        if (fromSystem != null && !fromSystem.isBlank()) {
+        if (fromSystem != null && !fromSystem.isBlank() && !"auto".equalsIgnoreCase(fromSystem)) {
             return fromSystem;
         }
-        return resolvePlaceholders(properties.getProperty("garage.base-uri", "http://localhost:8080/api"));
+        var propVal = resolvePlaceholders(properties.getProperty("garage.base-uri", "http://localhost:8080/api"));
+        if (propVal == null || propVal.isBlank() || "auto".equalsIgnoreCase(propVal)) {
+            var discovered = br.com.fiap.garage.e2e.aws.AwsEndpointResolver.resolveGarageBaseUri();
+            if (discovered != null && !discovered.isBlank()) {
+                return discovered;
+            }
+        }
+        return propVal;
     }
 
     public static String getAuthToken() {
@@ -98,7 +105,19 @@ public final class E2eConfig {
     }
 
     public static String getLambdaAuthUrl() {
-        return getProperty("garage.auth.lambda.url", "https://25wfrx7qruoodzfh5nm4sk26ty0sldzb.lambda-url.us-east-1.on.aws");
+        var fromSystem = System.getProperty("garage.auth.lambda.url",
+                System.getenv("GARAGE_AUTH_LAMBDA_URL"));
+        if (fromSystem != null && !fromSystem.isBlank() && !"auto".equalsIgnoreCase(fromSystem)) {
+            return fromSystem;
+        }
+        var propVal = getProperty("garage.auth.lambda.url", "auto");
+        if (propVal == null || propVal.isBlank() || "auto".equalsIgnoreCase(propVal)) {
+            var discovered = br.com.fiap.garage.e2e.aws.AwsEndpointResolver.resolveLambdaAuthUrl();
+            if (discovered != null && !discovered.isBlank()) {
+                return discovered;
+            }
+        }
+        return propVal;
     }
 
     public static String getAuthUsername() {

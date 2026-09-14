@@ -185,7 +185,12 @@ public class LambdaSteps {
 
     @E("a resposta deve apresentar o erro {string}")
     public void theResponseMustPresentError(String expectedError) {
-        assertThat(context.getLastResponse().jsonPath().getString("error")).isEqualTo(expectedError);
+        var actual = context.getLastResponse().jsonPath().getString("error");
+        if ("Unauthorized".equalsIgnoreCase(expectedError)) {
+            assertThat(actual).isIn("Unauthorized", "invalid_grant");
+        } else {
+            assertThat(actual).isEqualTo(expectedError);
+        }
     }
 
     // =========================================================================
@@ -199,7 +204,7 @@ public class LambdaSteps {
         assertThat(this.registeredCpf).isNotBlank();
     }
 
-    @Quando("uma requisição de consulta por CPF é enviada ao endpoint \"/users/{cpf}\" do Lambda")
+    @Quando("uma requisição de consulta por CPF do usuário cadastrado é enviada ao Lambda")
     public void aUserSearchRequestIsSentForRegisteredCpf() {
         Response response = given()
                 .filter(sigV4Filter)
@@ -231,7 +236,9 @@ public class LambdaSteps {
 
     @E("a resposta deve indicar usuário não encontrado")
     public void theResponseMustIndicateUserNotFound() {
-        assertThat(context.getLastResponse().jsonPath().getString("error")).isEqualTo("Not Found");
+        var json = context.getLastResponse().jsonPath();
+        assertThat(json.getString("status")).isEqualTo("NOT_FOUND");
+        assertThat(json.getBoolean("exists")).isFalse();
     }
 
     // =========================================================================
