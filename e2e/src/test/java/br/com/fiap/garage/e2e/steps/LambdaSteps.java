@@ -120,7 +120,7 @@ public class LambdaSteps {
         var vehicle = Map.of(
                 "make", "Volvo",
                 "model", "FH 540",
-                "licensePlate", "CORP" + (100 + new Random().nextInt(899)),
+                "licensePlate", "COR" + (1000 + new Random().nextInt(8999)),
                 "manufactureYear", "2024"
         );
 
@@ -214,7 +214,9 @@ public class LambdaSteps {
 
     @E("o usuário retornado deve conter o CPF consultado e status cadastrado")
     public void theReturnedUserMustContainTheConsultedCpfAndRegisteredStatus() {
-        assertThat(context.getLastResponse().jsonPath().getString("user.username")).isEqualTo(this.registeredCpf);
+        var returnedCpf = context.getLastResponse().jsonPath().getString("user.cpf");
+        assertThat(returnedCpf != null ? returnedCpf : context.getLastResponse().jsonPath().getString("user.username"))
+                .isEqualTo(this.registeredCpf);
     }
 
     @Quando("uma requisição de consulta por CPF é enviada ao endpoint {string} do Lambda")
