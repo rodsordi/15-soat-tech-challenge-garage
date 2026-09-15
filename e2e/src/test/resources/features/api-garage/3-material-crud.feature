@@ -14,3 +14,4 @@ Funcionalidade: Gestão de Materiais de Estoque
     Quando um novo material de estoque é cadastrado com preço e quantidade válidos
     Então o material deve ser persistido com status 201
     E os dados do material devem ser consultados com sucesso por seu identificador
+    E os dados de telemetria da operação devem ser validados no New Relic via API

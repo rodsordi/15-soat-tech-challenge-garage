@@ -14,3 +14,4 @@ Funcionalidade: Gestão de Funcionários Mecânicos
     Quando um novo funcionário mecânico é cadastrado com CPF e e-mail válidos
     Então o funcionário deve ser persistido com status 201
     E os dados cadastrais do funcionário devem ser consultados com sucesso por seu identificador
+    E os dados de telemetria da operação devem ser validados no New Relic via API

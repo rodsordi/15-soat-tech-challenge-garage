@@ -53,3 +53,5 @@ Funcionalidade: Ciclo de Vida Completo da Ordem de Serviço
     # --- 7. Fechamento de Métricas e Cálculo do Tempo Médio de Execução ---
     Quando a rotina de tempo médio de execução é acionada
     Então o tempo médio do serviço deve ser calculado e persistido
+    E os dados de telemetria da operação devem ser validados no New Relic via API
+    E as métricas de tempo de execução por status devem estar disponíveis no New Relic via API

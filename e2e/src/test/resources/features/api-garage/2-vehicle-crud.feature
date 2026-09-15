@@ -15,3 +15,4 @@ Funcionalidade: Gestão de Veículos Vinculados ao Cliente
     Quando um novo veículo é cadastrado com placa única para o cliente
     Então o veículo deve ser persistido com status 201
     E os dados do veículo devem ser consultados com sucesso por seu identificador
+    E os dados de telemetria da operação devem ser validados no New Relic via API

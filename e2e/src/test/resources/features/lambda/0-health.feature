@@ -11,9 +11,11 @@ Funcionalidade: Verificação de Saúde e Descoberta de Rotas do Lambda Auth
     Então a resposta do Lambda deve ter status 200
     E o corpo da resposta deve conter o status "UP"
     E a lista de endpoints disponíveis deve conter as rotas de registro, consulta e autenticação
+    E os dados de telemetria da operação devem ser validados no New Relic via API
 
   @health-preflight
   Cenário: Requisição preflight CORS para endpoints do Lambda
     Quando uma requisição OPTIONS é enviada para o serviço Lambda
     Então a resposta do Lambda deve ter status 204
     E os cabeçalhos de resposta devem conter políticas CORS permitindo a origem
+    E os dados de telemetria da operação devem ser validados no New Relic via API

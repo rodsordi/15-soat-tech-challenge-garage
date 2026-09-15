@@ -42,12 +42,16 @@ public final class E2eConfig {
         return Boolean.parseBoolean(getProperty("e2e.logging.enabled", "true"));
     }
 
-    public static void configureRestAssuredFilters() {
+    public static void configureRestAssuredFilters(io.restassured.filter.Filter... additionalFilters) {
+        var filters = new java.util.ArrayList<io.restassured.filter.Filter>();
         if (isLoggingEnabled()) {
-            RestAssured.replaceFiltersWith(new RequestLoggingFilter(), new ResponseLoggingFilter());
-        } else {
-            RestAssured.replaceFiltersWith(java.util.Collections.emptyList());
+            filters.add(new RequestLoggingFilter());
+            filters.add(new ResponseLoggingFilter());
         }
+        if (additionalFilters != null) {
+            java.util.Collections.addAll(filters, additionalFilters);
+        }
+        RestAssured.replaceFiltersWith(filters);
     }
 
     private static void loadResource(String filename) {
@@ -145,6 +149,47 @@ public final class E2eConfig {
 
     public static String getAuthPassword() {
         return getProperty("garage.auth.lambda.password", "SenhaForte@2026");
+    }
+
+    public static String getNewRelicAccountId() {
+        return getProperty("newrelic.account-id", "8469279");
+    }
+
+    public static String getNewRelicApiKey() {
+        var key = getProperty("newrelic.api-key", "");
+        if (key != null && !key.isBlank() && !key.startsWith("${")) {
+            return key;
+        }
+        var fromEnv = System.getenv("NEW_RELIC_API_KEY");
+        if (fromEnv != null && !fromEnv.isBlank()) {
+            return fromEnv;
+        }
+        if (System.getProperty("os.name", "").toLowerCase().contains("win")) {
+            try {
+                var process = new ProcessBuilder("reg", "query", "HKCU\\Environment", "/v", "NEW_RELIC_API_KEY").start();
+                var output = new String(process.getInputStream().readAllBytes());
+                if (output.contains("NEW_RELIC_API_KEY") && output.contains("REG_SZ")) {
+                    var parts = output.split("REG_SZ");
+                    if (parts.length > 1) {
+                        return parts[1].trim();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return "";
+    }
+
+    public static boolean isNewRelicValidationEnabled() {
+        return Boolean.parseBoolean(getProperty("newrelic.validation.enabled", "true"));
+    }
+
+    public static int getNewRelicValidationTimeoutSeconds() {
+        return Integer.parseInt(getProperty("newrelic.validation.timeout-seconds", "15"));
+    }
+
+    public static int getNewRelicMetricTimeoutSeconds() {
+        return Integer.parseInt(getProperty("newrelic.validation.metric-timeout-seconds", "120"));
     }
 }
 

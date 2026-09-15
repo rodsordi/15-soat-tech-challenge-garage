@@ -15,3 +15,4 @@ Funcionalidade: Gestão do Catálogo de Serviços
     Quando um novo serviço é cadastrado vinculado ao material de estoque
     Então o serviço deve ser persistido com status 201
     E os dados do serviço devem ser consultados com sucesso no catálogo
+    E os dados de telemetria da operação devem ser validados no New Relic via API

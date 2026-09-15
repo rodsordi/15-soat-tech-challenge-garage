@@ -14,3 +14,4 @@ Funcionalidade: Gestão de Clientes e Identidade Unificada
     Quando um novo cliente é cadastrado com documento e e-mail válidos
     Então o cliente deve ser persistido com status 201
     E os dados cadastrais do cliente devem ser consultados com sucesso por seu identificador
+    E os dados de telemetria da operação devem ser validados no New Relic via API
