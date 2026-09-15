@@ -16,4 +16,7 @@ public interface CustomerRepository extends CrudRepository<Customer, UUID> {
     Page<Customer> findAll(Specification<Customer> filter, Pageable pageable);
 
     Optional<Customer> findByDocument(String document);
+
+    default void updateIdentity(UUID oldId, UUID newId, String name, String email) {
+    }
 }

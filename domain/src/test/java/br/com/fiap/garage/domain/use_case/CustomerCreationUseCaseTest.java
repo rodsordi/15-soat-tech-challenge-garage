@@ -37,7 +37,7 @@ class CustomerCreationUseCaseTest {
 
             @BeforeEach
             void beforeEach() {
-                when(repository.save(any()))
+                org.mockito.Mockito.lenient().when(repository.save(any()))
                         .thenAnswer(invocationOnMock -> {
                             Customer customer = invocationOnMock.getArgument(0);
                             setField(customer, "id", fromString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577"));
@@ -56,6 +56,52 @@ class CustomerCreationUseCaseTest {
                 //Then
                 assertThat(actual.getId())
                         .hasToString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577");
+            }
+
+            @DisplayName("Given an existing customer with same id, should update and return existing")
+            @Test
+            void testIdempotency() {
+                //Given
+                var customerId = fromString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577");
+                var existing = create_Customer().withAllFields();
+                setField(existing, "id", customerId);
+                var incoming = create_Customer().withAllFields();
+                setField(incoming, "id", customerId);
+                setField(incoming, "name", "Updated Name");
+
+                org.mockito.Mockito.when(repository.findByDocument(incoming.getDocument()))
+                        .thenReturn(java.util.Optional.of(existing));
+
+                //When
+                var actual = customerCreationUseCase.create(incoming);
+
+                //Then
+                assertThat(actual.getId()).isEqualTo(customerId);
+                org.mockito.Mockito.verify(repository).save(existing);
+            }
+
+            @DisplayName("Given an existing customer with different id, should reconcile identity")
+            @Test
+            void testReconciliation() {
+                //Given
+                var oldId = fromString("11111111-1111-1111-1111-111111111111");
+                var newId = fromString("22222222-2222-2222-2222-222222222222");
+                var existing = create_Customer().withAllFields();
+                setField(existing, "id", oldId);
+                var incoming = create_Customer().withAllFields();
+                setField(incoming, "id", newId);
+
+                org.mockito.Mockito.when(repository.findByDocument(incoming.getDocument()))
+                        .thenReturn(java.util.Optional.of(existing));
+                org.mockito.Mockito.when(repository.findById(newId))
+                        .thenReturn(java.util.Optional.of(incoming));
+
+                //When
+                var actual = customerCreationUseCase.create(incoming);
+
+                //Then
+                assertThat(actual.getId()).isEqualTo(newId);
+                org.mockito.Mockito.verify(repository).updateIdentity(oldId, newId, incoming.getName(), incoming.getEmail());
             }
         }
     }

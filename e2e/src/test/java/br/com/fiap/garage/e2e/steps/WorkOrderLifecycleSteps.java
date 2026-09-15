@@ -11,6 +11,8 @@ import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Random;
@@ -29,6 +31,8 @@ import static java.lang.Thread.sleep;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WorkOrderLifecycleSteps {
+
+    private static final Logger log = LoggerFactory.getLogger(WorkOrderLifecycleSteps.class);
 
     private final ScenarioTestContext context;
 
@@ -302,6 +306,14 @@ public class WorkOrderLifecycleSteps {
     }
 
     private void updateWorkOrderStatus(WorkOrderStatus status) {
+        try {
+            log.info("Waiting 3 seconds in Cucumber before transitioning work order to status: {}", status);
+            sleep(3000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Thread interrupted while waiting before status transition", e);
+        }
+
         var requestBody = WorkOrderDto.PatchRequest.builder()
                 .status(status)
                 .build();

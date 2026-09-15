@@ -7,6 +7,7 @@ import org.hibernate.boot.beanvalidation.IntegrationException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -104,6 +105,12 @@ public class GlobalExceptionHandler {
     public ProblemDetail handle(InternalErrorException e) {
         log.error(e.getMessage(), e);
         return ProblemDetail.forStatusAndDetail(INTERNAL_SERVER_ERROR, "Internal error");
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handle(DataIntegrityViolationException e) {
+        log.warn("Data integrity violation: {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(CONFLICT, "Data integrity violation: a record with conflicting unique keys already exists.");
     }
 
     @ExceptionHandler(Exception.class)

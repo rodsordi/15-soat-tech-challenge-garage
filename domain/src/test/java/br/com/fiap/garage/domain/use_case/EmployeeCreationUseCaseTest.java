@@ -37,7 +37,7 @@ class EmployeeCreationUseCaseTest {
 
             @BeforeEach
             void beforeEach() {
-                when(repository.save(any()))
+                org.mockito.Mockito.lenient().when(repository.save(any()))
                         .thenAnswer(invocationOnMock -> {
                             Employee employee = invocationOnMock.getArgument(0);
                             setField(employee, "id", fromString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577"));
@@ -56,6 +56,52 @@ class EmployeeCreationUseCaseTest {
                 //Then
                 assertThat(actual.getId())
                         .hasToString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577");
+            }
+
+            @DisplayName("Given an existing employee with same id, should update and return existing")
+            @Test
+            void testIdempotency() {
+                //Given
+                var employeeId = fromString("c0a1f176-d3e6-4910-8fba-9a6c31bc5577");
+                var existing = create_Employee().withAllFields();
+                setField(existing, "id", employeeId);
+                var incoming = create_Employee().withAllFields();
+                setField(incoming, "id", employeeId);
+                setField(incoming, "name", "Updated Name");
+
+                org.mockito.Mockito.when(repository.findByCpf(incoming.getCpf()))
+                        .thenReturn(java.util.Optional.of(existing));
+
+                //When
+                var actual = employeeCreationUseCase.create(incoming);
+
+                //Then
+                assertThat(actual.getId()).isEqualTo(employeeId);
+                org.mockito.Mockito.verify(repository).save(existing);
+            }
+
+            @DisplayName("Given an existing employee with different id, should reconcile identity")
+            @Test
+            void testReconciliation() {
+                //Given
+                var oldId = fromString("11111111-1111-1111-1111-111111111111");
+                var newId = fromString("22222222-2222-2222-2222-222222222222");
+                var existing = create_Employee().withAllFields();
+                setField(existing, "id", oldId);
+                var incoming = create_Employee().withAllFields();
+                setField(incoming, "id", newId);
+
+                org.mockito.Mockito.when(repository.findByCpf(incoming.getCpf()))
+                        .thenReturn(java.util.Optional.of(existing));
+                org.mockito.Mockito.when(repository.findById(newId))
+                        .thenReturn(java.util.Optional.of(incoming));
+
+                //When
+                var actual = employeeCreationUseCase.create(incoming);
+
+                //Then
+                assertThat(actual.getId()).isEqualTo(newId);
+                org.mockito.Mockito.verify(repository).updateIdentity(oldId, newId, incoming.getName(), incoming.getEmail());
             }
         }
     }

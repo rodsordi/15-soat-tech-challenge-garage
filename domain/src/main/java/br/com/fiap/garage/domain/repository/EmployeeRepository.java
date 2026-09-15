@@ -16,4 +16,7 @@ public interface EmployeeRepository extends CrudRepository<Employee, UUID> {
     Page<Employee> findAll(Specification<Employee> filter, Pageable pageable);
 
     Optional<Employee> findByCpf(String cpf);
+
+    default void updateIdentity(UUID oldId, UUID newId, String name, String email) {
+    }
 }
