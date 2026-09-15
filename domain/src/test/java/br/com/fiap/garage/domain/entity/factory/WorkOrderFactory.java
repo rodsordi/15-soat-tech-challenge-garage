@@ -30,6 +30,11 @@ public final class WorkOrderFactory {
                 .id(fromString("e48ad20c-69dd-4382-b567-0e02b2c3d480"))
                 .status(RECEIVED)
                 .totalAmount(new BigDecimal("999.99"))
+                .diagnosingAt(newDateTime("14/12/2026 10:00:00"))
+                .waitingApprovalAt(newDateTime("14/12/2026 11:00:00"))
+                .executingAt(newDateTime("14/12/2026 12:00:00"))
+                .finishedAt(newDateTime("14/12/2026 15:00:00"))
+                .releasedAt(newDateTime("14/12/2026 16:00:00"))
                 // Composition
                 .vehicle(create_Vehicle().withAllFields())
                 .employee(create_Employee().withAllFields())
@@ -49,6 +54,11 @@ public final class WorkOrderFactory {
         withAllFields();
         return builder
                 .id(null)
+                .diagnosingAt(null)
+                .waitingApprovalAt(null)
+                .executingAt(null)
+                .finishedAt(null)
+                .releasedAt(null)
                 .vehicle(create_Vehicle().withAllFieldsExceptDB())
                 .employee(create_Employee().withAllFieldsExceptDB())
                 .clearEstimatedServices()

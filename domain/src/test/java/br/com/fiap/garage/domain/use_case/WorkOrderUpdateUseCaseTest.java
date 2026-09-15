@@ -2,6 +2,7 @@ package br.com.fiap.garage.domain.use_case;
 
 import br.com.fiap.commons.exception.ResourceNotFoundException;
 import br.com.fiap.garage.domain.publisher.NotifyCustomerForApprovalPublisher;
+import br.com.fiap.garage.domain.publisher.WorkOrderStatusMetricsPublisher;
 import br.com.fiap.garage.domain.repository.EmployeeRepository;
 import br.com.fiap.garage.domain.repository.WorkOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,9 @@ class WorkOrderUpdateUseCaseTest {
     @Mock
     private NotifyCustomerForApprovalPublisher notifyCustomerForApprovalPublisher;
 
+    @Mock
+    private WorkOrderStatusMetricsPublisher workOrderStatusMetricsPublisher;
+
     @DisplayName("When updating WorkOrder status")
     @Nested
     class UpdateStatus {
@@ -57,7 +61,7 @@ class WorkOrderUpdateUseCaseTest {
                         .thenAnswer(i -> i.getArgument(0));
             }
 
-            @DisplayName("Given a valid id, and a valid status")
+            @DisplayName("Given a valid id, and DIAGNOSING status")
             @Test
             void test1() {
                 //Given
@@ -67,6 +71,66 @@ class WorkOrderUpdateUseCaseTest {
                 var actual = workOrderUpdateUseCase.updateStatus(id, status);
                 //Then
                 assertThat(actual).isNotNull();
+                verify(workOrderRepository, times(1)).save(any());
+            }
+
+            @DisplayName("Given a valid id, and WAITING_FOR_APPROVAL status")
+            @Test
+            void test2() {
+                //Given
+                var id = UUID.fromString("b06b216f-215d-41eb-8c03-570f03562064");
+                var workOrder = create_WorkOrder().withAllFields();
+                workOrder.diagnose();
+                when(workOrderRepository.findById(id)).thenReturn(Optional.of(workOrder));
+
+                //When
+                var actual = workOrderUpdateUseCase.updateStatus(id, br.com.fiap.garage.domain.enums.WorkOrderStatus.WAITING_FOR_APPROVAL);
+
+                //Then
+                assertThat(actual).isNotNull();
+                verify(workOrderStatusMetricsPublisher, times(1)).recordStatusDuration(eq(DIAGNOSING), any());
+                verify(notifyCustomerForApprovalPublisher, times(1)).notify(any());
+                verify(workOrderRepository, times(1)).save(any());
+            }
+
+            @DisplayName("Given a valid id, and FINISHED status")
+            @Test
+            void test3() {
+                //Given
+                var id = UUID.fromString("b06b216f-215d-41eb-8c03-570f03562064");
+                var workOrder = create_WorkOrder().withAllFields();
+                workOrder.diagnose();
+                workOrder.waitForApproval();
+                workOrder.execute();
+                when(workOrderRepository.findById(id)).thenReturn(Optional.of(workOrder));
+
+                //When
+                var actual = workOrderUpdateUseCase.updateStatus(id, br.com.fiap.garage.domain.enums.WorkOrderStatus.FINISHED);
+
+                //Then
+                assertThat(actual).isNotNull();
+                verify(workOrderStatusMetricsPublisher, times(1)).recordStatusDuration(eq(EXECUTING), any());
+                verify(workOrderRepository, times(1)).save(any());
+            }
+
+            @DisplayName("Given a valid id, and RELEASED status")
+            @Test
+            void test4() {
+                //Given
+                var id = UUID.fromString("b06b216f-215d-41eb-8c03-570f03562064");
+                var workOrder = create_WorkOrder().withAllFields();
+                workOrder.diagnose();
+                workOrder.waitForApproval();
+                workOrder.execute();
+                workOrder.finish();
+                when(workOrderRepository.findById(id)).thenReturn(Optional.of(workOrder));
+
+                //When
+                var actual = workOrderUpdateUseCase.updateStatus(id, br.com.fiap.garage.domain.enums.WorkOrderStatus.RELEASED);
+
+                //Then
+                assertThat(actual).isNotNull();
+                verify(workOrderStatusMetricsPublisher, times(1)).recordStatusDuration(eq(br.com.fiap.garage.domain.enums.WorkOrderStatus.FINISHED), any());
                 verify(workOrderRepository, times(1)).save(any());
             }
         }

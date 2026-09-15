@@ -50,6 +50,18 @@ public final class WorkOrderAssertions {
         assertThat(actual.getUpdatedAt())
                 .isNull();
 
+        // Status Timestamps
+        assertThat(actual.getDiagnosingAt())
+                .isNull();
+        assertThat(actual.getWaitingApprovalAt())
+                .isNull();
+        assertThat(actual.getExecutingAt())
+                .isNull();
+        assertThat(actual.getFinishedAt())
+                .isNull();
+        assertThat(actual.getReleasedAt())
+                .isNull();
+
         // And
         assertThatObject(actual)
                 .hasAllGetMethodsVerifiedOnceAtLeast();

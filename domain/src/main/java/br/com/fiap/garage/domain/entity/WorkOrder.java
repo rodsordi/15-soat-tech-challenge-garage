@@ -9,6 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +20,7 @@ import static br.com.fiap.garage.domain.enums.WorkOrderStatus.RECEIVED;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.EnumType.STRING;
 import static java.math.BigDecimal.ZERO;
+import static java.time.LocalDateTime.now;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -59,6 +62,21 @@ public class WorkOrder extends AuditableEntity implements Serializable {
     @Valid
     private Set<EstimatedService> estimatedServices;
 
+    @Column(comment = "Work Order diagnosing start timestamp. Owner: self")
+    private LocalDateTime diagnosingAt;
+
+    @Column(comment = "Work Order waiting approval timestamp. Owner: self")
+    private LocalDateTime waitingApprovalAt;
+
+    @Column(comment = "Work Order executing start timestamp. Owner: self")
+    private LocalDateTime executingAt;
+
+    @Column(comment = "Work Order finished timestamp. Owner: self")
+    private LocalDateTime finishedAt;
+
+    @Column(comment = "Work Order released timestamp. Owner: self")
+    private LocalDateTime releasedAt;
+
     public void update(Employee employee) {
         this.employee = employee;
     }
@@ -94,29 +112,58 @@ public class WorkOrder extends AuditableEntity implements Serializable {
         status = status.getState()
                 .apply(this)
                 .diagnose();
+        diagnosingAt = now();
     }
 
     public void waitForApproval() {
         status = status.getState()
                 .apply(this)
                 .waitForApproval();
+        waitingApprovalAt = now();
     }
 
     public void execute() {
         status = status.getState()
                 .apply(this)
                 .execute();
+        executingAt = now();
     }
 
     public void finish() {
         status = status.getState()
                 .apply(this)
                 .finish();
+        finishedAt = now();
     }
 
     public void release() {
         status = status.getState()
                 .apply(this)
                 .release();
+        releasedAt = now();
+    }
+
+    public Duration calculateDiagnosingDuration() {
+        var start = diagnosingAt != null ? diagnosingAt : getCreatedAt();
+        if (start != null && waitingApprovalAt != null) {
+            return Duration.between(start, waitingApprovalAt);
+        }
+        return null;
+    }
+
+    public Duration calculateExecutingDuration() {
+        var start = executingAt != null ? executingAt : waitingApprovalAt;
+        if (start != null && finishedAt != null) {
+            return Duration.between(start, finishedAt);
+        }
+        return null;
+    }
+
+    public Duration calculateFinishedDuration() {
+        var start = finishedAt != null ? finishedAt : executingAt;
+        if (start != null && releasedAt != null) {
+            return Duration.between(start, releasedAt);
+        }
+        return null;
     }
 }
